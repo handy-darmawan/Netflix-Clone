@@ -1,3 +1,0 @@
-# Netflix Clone
-
-... description
