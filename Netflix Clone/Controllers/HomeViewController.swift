@@ -33,6 +33,8 @@ class HomeViewController: UIViewController {
         tableView.dataSource = self
         
         tableView.tableHeaderView = HeroHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 450))
+        
+        configureNavbar()
     }
     
     func setupTableView() {
@@ -43,6 +45,16 @@ class HomeViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
+    
+    func configureNavbar() {
+        let netflixLogo = UIImage(named: "netflix48")?.withRenderingMode(.alwaysOriginal)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: netflixLogo, style: .done, target: self, action: nil)
+        
+        let profileButton = UIBarButtonItem(image: UIImage(systemName: "person"), style: .done, target: self, action: nil)
+        let playButton = UIBarButtonItem(image: UIImage(systemName: "play.rectangle"), style: .done, target: self, action: nil)
+        navigationItem.rightBarButtonItems = [profileButton, playButton]
+    }
+    
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
@@ -51,7 +63,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        15
+        4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -65,5 +77,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         40
+    }
+    
+    //hide the nav bar when scrolling to bottom direction
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let defaultOffset = view.safeAreaInsets.top
+        let offset = scrollView.contentOffset.y + defaultOffset
+        navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
+        print(defaultOffset)
     }
 }

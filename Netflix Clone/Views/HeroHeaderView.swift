@@ -24,8 +24,16 @@ class HeroHeaderView: UIView {
     
     private func setup() {
         setupImageView()
+        setupGradient()
         setupPlayButton()
         setupDownloadButton()
+    }
+    
+    private func setupGradient() {
+        let gradient = CAGradientLayer()
+        gradient.frame = bounds
+        gradient.colors = [UIColor.clear.cgColor, UIColor.systemBackground.cgColor]
+        layer.addSublayer(gradient)
     }
     
     private func setupImageView() {
