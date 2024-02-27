@@ -16,6 +16,7 @@
 		805AB2482B8C98B700ADB8BD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB2472B8C98B700ADB8BD /* SearchViewController.swift */; };
 		805AB24A2B8C98BE00ADB8BD /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB2492B8C98BE00ADB8BD /* DownloadViewController.swift */; };
 		805AB2532B8CC8BD00ADB8BD /* CollectionViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB2522B8CC8BD00ADB8BD /* CollectionViewTableViewCell.swift */; };
+		80FBE8C52B8E25EA0083AC91 /* HeroHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FBE8C42B8E25EA0083AC91 /* HeroHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		805AB2472B8C98B700ADB8BD /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		805AB2492B8C98BE00ADB8BD /* DownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
 		805AB2522B8CC8BD00ADB8BD /* CollectionViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewTableViewCell.swift; sourceTree = "<group>"; };
+		80FBE8C42B8E25EA0083AC91 /* HeroHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				805AB2522B8CC8BD00ADB8BD /* CollectionViewTableViewCell.swift */,
+				80FBE8C42B8E25EA0083AC91 /* HeroHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -197,6 +200,7 @@
 				805AB2312B8C8DBF00ADB8BD /* MainTabBarViewController.swift in Sources */,
 				805AB2532B8CC8BD00ADB8BD /* CollectionViewTableViewCell.swift in Sources */,
 				805AB22D2B8C8DBF00ADB8BD /* AppDelegate.swift in Sources */,
+				80FBE8C52B8E25EA0083AC91 /* HeroHeaderView.swift in Sources */,
 				805AB24A2B8C98BE00ADB8BD /* DownloadViewController.swift in Sources */,
 				805AB22F2B8C8DBF00ADB8BD /* SceneDelegate.swift in Sources */,
 				805AB2462B8C98AE00ADB8BD /* UpcomingViewController.swift in Sources */,

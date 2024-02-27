@@ -7,6 +7,13 @@
 
 import UIKit
 
+/**
+ Update:
+ 1. HomeViewController -> Use Composional layout to make the layout and fill the data with NSDiffableDataSource
+ 2, HeroHeaderView -> Use UIStackView to make autolayout in button
+ 
+ */
+
 class HomeViewController: UIViewController {
     
     private(set) var tableView: UITableView = {
@@ -25,7 +32,7 @@ class HomeViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 450))
+        tableView.tableHeaderView = HeroHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 450))
     }
     
     func setupTableView() {
