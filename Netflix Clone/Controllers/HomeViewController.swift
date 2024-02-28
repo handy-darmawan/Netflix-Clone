@@ -15,6 +15,7 @@ import UIKit
  */
 
 class HomeViewController: UIViewController {
+    private let sectionTitles: [String] = ["Trending Movies", "Popular", "Trending TV", "Upcoming Movies", "Top Rated"]
     
     private(set) var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
@@ -84,6 +85,16 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         let defaultOffset = view.safeAreaInsets.top
         let offset = scrollView.contentOffset.y + defaultOffset
         navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
-        print(defaultOffset)
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        sectionTitles[section]
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        guard let header = view as? UITableViewHeaderFooterView else { return }
+        header.textLabel?.text = sectionTitles[section]
+        header.textLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
+        header.textLabel?.textColor = .white
     }
 }

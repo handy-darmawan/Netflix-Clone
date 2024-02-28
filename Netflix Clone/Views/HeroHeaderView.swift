@@ -12,7 +12,7 @@ class HeroHeaderView: UIView {
     private var imageView: UIImageView!
     private var playButton: UIButton!
     private var downloadButton: UIButton!
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
