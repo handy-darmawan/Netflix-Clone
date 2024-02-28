@@ -53,7 +53,7 @@ class HeroHeaderView: UIView {
     }
     
     @objc private func printers(_ sender: UIButton) {
-        print(sender.titleLabel?.text)
+        print(sender.titleLabel!.text ?? "sender has no title")
     }
     
     private func setupPlayButton() {
