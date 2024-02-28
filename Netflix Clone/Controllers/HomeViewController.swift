@@ -10,12 +10,53 @@ import UIKit
 /**
  Update:
  1. HomeViewController -> Use Composional layout to make the layout and fill the data with NSDiffableDataSource
- 2, HeroHeaderView -> Use UIStackView to make autolayout in button
- 
+ 2. HeroHeaderView -> Use UIStackView to make autolayout in button
+ 3. APIManager -> Too much boiler plate code to fetch and parsing API
+            -> Fix the structure of API Manager
  */
 
+enum Sections: CaseIterable {
+    case trendingMovies
+    case popular
+    case trendingTV
+    case upcomingMovies
+    case topRated
+    
+    var rawValue: String {
+        switch self {
+        case .trendingMovies:
+            return "Trending Movies"
+        case .popular:
+            return "Popular"
+        case .trendingTV:
+            return "Trending TV"
+        case .upcomingMovies:
+            return "Upcoming Movies"
+        case .topRated:
+            return "Top Rated"
+        }
+    }
+    
+    var value: Int {
+        switch self {
+        case .trendingMovies:
+            return 0
+        case .popular:
+            return 1
+        case .trendingTV:
+            return 2
+        case .upcomingMovies:
+            return 3
+        case .topRated:
+            return 4
+        }
+    }
+}
+
+
 class HomeViewController: UIViewController {
-    private let sectionTitles: [String] = ["Trending Movies", "Popular", "Trending TV", "Upcoming Movies", "Top Rated"]
+//    private let sectionTitles: [String] = ["Trending Movies", "Popular", "Trending TV", "Upcoming Movies", "Top Rated"]
+    
     
     private(set) var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
@@ -64,11 +105,61 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        4
+        Sections.allCases.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CollectionViewTableViewCell.reuseIdentifier, for: indexPath) as? CollectionViewTableViewCell else { return UITableViewCell()}
+        
+        switch indexPath.section {
+        case Sections.popular.value:
+            APIManager.shared.getPopular { result in
+                switch result {
+                case .success(let response):
+                    cell.configure(with: response)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        case Sections.trendingMovies.value:
+            APIManager.shared.getTrendingMovies { result in
+                switch result {
+                case .success(let response):
+                    cell.configure(with: response)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        case Sections.trendingTV.value:
+            APIManager.shared.getTrendingTv { result in
+                switch result {
+                case .success(let response):
+                    cell.configure(with: response)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        case Sections.upcomingMovies.value:
+            APIManager.shared.getUpcomingMovie { result in
+                switch result {
+                case .success(let response):
+                    cell.configure(with: response)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        case Sections.topRated.value:
+            APIManager.shared.getTopRated { result in
+                switch result {
+                case .success(let response):
+                    cell.configure(with: response)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        default:
+            return UITableViewCell()
+        }
         return cell
     }
     
@@ -88,12 +179,12 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        sectionTitles[section]
+        Sections.allCases[section].rawValue
     }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         guard let header = view as? UITableViewHeaderFooterView else { return }
-        header.textLabel?.text = sectionTitles[section]
+        header.textLabel?.text = Sections.allCases[section].rawValue
         header.textLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
         header.textLabel?.textColor = .white
     }
