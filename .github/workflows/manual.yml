@@ -1,6 +1,7 @@
 # This is a basic workflow that is manually triggered
 
 name: Auto PR Main Branch
+description: Auto PR to the main branch when push is executed
 
 on:
   push:
@@ -18,7 +19,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.PR }}
+          token: ${{ secrets.GH_TOKEN }}
           branch: main
           title: "Automated PR: Merge ${{ steps.commit_message.outputs.message }} into main"
           body: "This PR was automatically created and merged by a GitHub Action."
