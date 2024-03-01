@@ -153,5 +153,56 @@ class APIManager {
         }
     }
     
+    func getDiscoverMovies(completion: @escaping (Result<[Movie], Error>) -> Void) {
+        let urlString = "\(Constants.baseURL)/discover/movie?api_key=\(Constants.API_KEY)&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate"
+        if let url = URL(string: urlString) {
+            let request = URLRequest(url: url)
+            
+            URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                do {
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    let results = try decoder.decode(Response.self, from: data)
+                    
+                    completion(.success(results.results))
+                } catch {
+                    
+                    completion(.failure(APIError.failedToGetData))
+                }
+            }
+            .resume()
+        }
+    }
+    
+    func search(with query: String, completion: @escaping (Result<[Movie], Error>) -> Void) {
+        guard let query = query.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else { return }
+        let urlString = "\(Constants.baseURL)/search/movie?api_key=\(Constants.API_KEY)&query=\(query)"
+        if let url = URL(string: urlString) {
+            let request = URLRequest(url: url)
+            
+            URLSession.shared.dataTask(with: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetData))
+                    return
+                }
+                do {
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    let results = try decoder.decode(Response.self, from: data)
+                    
+                    completion(.success(results.results))
+                } catch {
+                    
+                    completion(.failure(APIError.failedToGetData))
+                }
+            }
+            .resume()
+        }
+    }
+    
     
 }

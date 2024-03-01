@@ -27,7 +27,7 @@ class TitleTableViewCell: UITableViewCell {
     
     private var playTitleButton: UIButton = {
         let button = UIButton()
-        let playImage = UIImage(s   ystemName: "play.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 30))
+        let playImage = UIImage(systemName: "play.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 30))
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(playImage, for: .normal)
         return button
@@ -57,15 +57,18 @@ class TitleTableViewCell: UITableViewCell {
             upcomingImageView.widthAnchor.constraint(equalToConstant: 100),
             
             upcomingLabel.leadingAnchor.constraint(equalTo: upcomingImageView.trailingAnchor, constant: 30),
-//            upcomingLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-//            upcomingLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             upcomingLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
             playTitleButton.leadingAnchor.constraint(equalTo: upcomingLabel.trailingAnchor, constant: 10),
             playTitleButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             playTitleButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
         ])
+    
+        upcomingLabel.backgroundColor = .red
     }
+    
+    
+    
     
     func configure(with model: Movie) {
         let path = "https://image.tmdb.org/t/p/w500\(model.posterPath ?? "")"
