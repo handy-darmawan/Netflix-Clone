@@ -65,9 +65,6 @@ class TitleTableViewCell: UITableViewCell {
         upcomingLabel.backgroundColor = .red
     }
     
-    
-    
-    
     func configure(with model: Movie) {
         let path = "https://image.tmdb.org/t/p/w500\(model.posterPath ?? "")"
         upcomingImageView.sd_setImage(with: URL(string: path), completed: nil)
