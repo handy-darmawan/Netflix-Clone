@@ -1,7 +1,6 @@
 # This is a basic workflow that is manually triggered
 
 name: Auto PR Main Branch
-description: Auto PR to the main branch when push is executed
 
 on:
   push:
