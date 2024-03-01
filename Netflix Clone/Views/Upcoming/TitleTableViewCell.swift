@@ -73,5 +73,4 @@ class TitleTableViewCell: UITableViewCell {
         upcomingImageView.sd_setImage(with: URL(string: path), completed: nil)
         upcomingLabel.text = model.originalName ?? model.originalTitle ?? "Unknown"
     }
-    
 }
