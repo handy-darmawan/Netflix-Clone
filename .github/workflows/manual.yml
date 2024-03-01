@@ -1,0 +1,27 @@
+# This is a basic workflow that is manually triggered
+
+name: Auto PR Main Branch
+description: Auto PR to the main branch when push is executed
+
+on:
+  push:
+    branch:
+      - feature/*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.xcode }}
+        branch: main
+        title: "Automated PR: Merge ${{ steps.commit_message.outputs.message }} into main"
+        body: "This PR was automatically created and merged by a GitHub Action."
+        labels: "automated"
+        assignees: "handy-darmawan"
