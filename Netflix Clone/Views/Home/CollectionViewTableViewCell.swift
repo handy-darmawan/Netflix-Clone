@@ -7,9 +7,15 @@
 
 import UIKit
 
+protocol CollectionItemDelegate: AnyObject {
+    func cellDidTapped(_ cell: CollectionViewTableViewCell, vm: TitlePreviewViewModel)
+}
+
 class CollectionViewTableViewCell: UITableViewCell {
     static let reuseIdentifier = "CollectionViewTableViewCell"
     private var data: [Movie] = []
+    
+    weak var delegate: CollectionItemDelegate?
     
     private(set) var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -66,17 +72,16 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
         collectionView.deselectItem(at: indexPath, animated: true)
         
         if let title = data[indexPath.row].originalName ?? data[indexPath.row].originalTitle {
-            APIManager.shared.getMovieDetail(with: title) { results in
+            APIManager.shared.getMovieDetail(with: title + " trailer") { [weak self] results in
+                guard let self = self else { return }
                 switch results {
                 case .success(let results):
-                    DispatchQueue.main.async {
-                        print(results.id)
-                    }
+                    let vm = TitlePreviewViewModel(title: title, youtubeView: results, titleOverview: data[indexPath.item].overview ?? "This is an overview")
+                    delegate?.cellDidTapped(self, vm: vm)
                 case .failure(let error):
                     print(error.localizedDescription)
                 }
             }
-            
         }
     }
     

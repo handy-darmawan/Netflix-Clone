@@ -218,8 +218,7 @@ class APIManager {
                     return
                 }
                 do {
-                    let decoder = JSONDecoder()
-                    let results = try decoder.decode(YoutubeResponse.self, from: data)
+                    let results = try JSONDecoder().decode(YoutubeResponse.self, from: data)
                     completion(.success(results.items[0]))
                 } catch {
                     

@@ -10,7 +10,7 @@ import UIKit
 class MainTabBarViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemMint
+        view.backgroundColor = .systemBackground
         
         let homeVC = UINavigationController(rootViewController: HomeViewController())
         let upcomingVC = UINavigationController(rootViewController: UpcomingViewController())
