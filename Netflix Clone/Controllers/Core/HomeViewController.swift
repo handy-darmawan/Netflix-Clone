@@ -56,6 +56,8 @@ enum Sections: CaseIterable {
 
 class HomeViewController: UIViewController {
     
+    
+    
     private(set) var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.register(CollectionViewTableViewCell.self, forCellReuseIdentifier: CollectionViewTableViewCell.reuseIdentifier)
@@ -108,6 +110,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CollectionViewTableViewCell.reuseIdentifier, for: indexPath) as? CollectionViewTableViewCell else { return UITableViewCell()}
+        cell.delegate = self
         
         switch indexPath.section {
         case Sections.popular.value:
@@ -185,5 +188,18 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         header.textLabel?.text = Sections.allCases[section].rawValue
         header.textLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
         header.textLabel?.textColor = .white
+    }
+}
+
+
+extension HomeViewController: CollectionItemDelegate {
+    func cellDidTapped(_ cell: CollectionViewTableViewCell, vm: TitlePreviewViewModel) {
+        DispatchQueue.main.async { [weak self]  in
+            guard let self = self else { return }
+            
+            let vc = TitlePreviewViewController()
+            vc.configure(with: vm)
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }

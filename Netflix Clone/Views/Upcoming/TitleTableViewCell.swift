@@ -36,9 +36,7 @@ class TitleTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         setup()
-        
     }
     
     required init?(coder: NSCoder) {
@@ -66,9 +64,6 @@ class TitleTableViewCell: UITableViewCell {
     
         upcomingLabel.backgroundColor = .red
     }
-    
-    
-    
     
     func configure(with model: Movie) {
         let path = "https://image.tmdb.org/t/p/w500\(model.posterPath ?? "")"
