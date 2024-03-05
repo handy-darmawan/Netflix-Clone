@@ -55,7 +55,8 @@ enum Sections: CaseIterable {
 
 
 class HomeViewController: UIViewController {
-    
+    var randomMovie: Movie?
+    var heroHeaderView: HeroHeaderView?
     
     
     private(set) var tableView: UITableView = {
@@ -74,9 +75,28 @@ class HomeViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.tableHeaderView = HeroHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 450))
+        heroHeaderView = HeroHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 450))
+        tableView.tableHeaderView = heroHeaderView
         
         configureNavbar()
+        setHeroHeaderView()
+    }
+    
+    func setHeroHeaderView() {
+        APIManager.shared.getTrendingMovies { [weak self] results in
+            guard let self = self else { return }
+            switch results {
+            case .success(let movies):
+                let movie = movies.randomElement()
+                randomMovie = movie
+                if let moviePoster = movie?.posterPath {
+                    heroHeaderView?.configure(with: moviePoster)
+                    
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     func setupTableView() {
