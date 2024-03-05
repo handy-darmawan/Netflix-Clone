@@ -22,6 +22,7 @@ class SearchViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Search"
         view.addSubview(tableView)
+        
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.dataSource = self
@@ -69,6 +70,31 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         140
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let movie = data[indexPath.row]
+        guard
+            let movieTitle = movie.originalTitle ?? movie.originalName,
+            let movieOverview = movie.overview
+        else { return }
+        
+        APIManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
+            guard let self = self else { return }
+            switch results {
+            case .success(let movieDetail):
+                DispatchQueue.main.async {
+                    let vc = TitlePreviewViewController()
+                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
+                    vc.configure(with: vm)
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
 }
 
 
@@ -80,6 +106,8 @@ extension SearchViewController: UISearchResultsUpdating {
               let resultController = searchController.searchResultsController as? SearchResultsViewController
         else { return }
         
+        resultController.delegate = self
+        
         APIManager.shared.search(with: query) { result in
             switch result {
             case .success(let movies):
@@ -90,3 +118,16 @@ extension SearchViewController: UISearchResultsUpdating {
         }
     }
 }
+
+extension SearchViewController: SearchResultsViewControllerDelegate {
+    func didTap(vm: TitlePreviewViewModel) {
+        //push to the next view controller
+        DispatchQueue.main.async { [ weak self] in
+            guard let self = self else { return }
+            let vc = TitlePreviewViewController()
+            vc.configure(with: vm)
+            navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+}
+

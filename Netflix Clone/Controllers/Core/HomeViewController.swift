@@ -211,10 +211,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-
 extension HomeViewController: CollectionItemDelegate {
     func cellDidTapped(_ cell: CollectionViewTableViewCell, vm: TitlePreviewViewModel) {
-        DispatchQueue.main.async { [weak self]  in
+        DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             
             let vc = TitlePreviewViewController()
