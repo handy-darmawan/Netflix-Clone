@@ -89,4 +89,9 @@ class HeroHeaderView: UIView {
             downloadButton.widthAnchor.constraint(equalToConstant: 100)
         ])
     }
+    
+    func configure(with imagePath: String) {
+        guard let url = URL(string: "https://image.tmdb.org/t/p/w500\(imagePath))") else { return }
+        imageView.sd_setImage(with: url, completed: nil)
+    }
 }
