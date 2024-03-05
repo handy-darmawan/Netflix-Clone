@@ -33,7 +33,6 @@ class TitleTableViewCell: UITableViewCell {
         return button
     }()
     
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setup()
@@ -61,8 +60,6 @@ class TitleTableViewCell: UITableViewCell {
             playTitleButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             playTitleButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
         ])
-    
-        upcomingLabel.backgroundColor = .red
     }
     
     func configure(with model: Movie) {
@@ -70,5 +67,4 @@ class TitleTableViewCell: UITableViewCell {
         upcomingImageView.sd_setImage(with: URL(string: path), completed: nil)
         upcomingLabel.text = model.originalName ?? model.originalTitle ?? "Unknown"
     }
-    
 }

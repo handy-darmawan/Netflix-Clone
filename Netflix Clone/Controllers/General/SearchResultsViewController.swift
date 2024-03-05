@@ -7,9 +7,14 @@
 
 import UIKit
 
-class SearchResultsViewController: UIViewController {
+protocol SearchResultsViewControllerDelegate: AnyObject {
+    func didTap(vm: TitlePreviewViewModel)
+}
 
+class SearchResultsViewController: UIViewController {
+    
     var data: [Movie] = []
+    weak var delegate: SearchResultsViewControllerDelegate?
     
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -25,8 +30,7 @@ class SearchResultsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemRed
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .systemBackground
         
         view.addSubview(collectionView)
         collectionView.delegate = self
@@ -46,6 +50,10 @@ class SearchResultsViewController: UIViewController {
             self.collectionView.reloadData()
         }
     }
+    
+    private func downloadTitleAt(indexpath: IndexPath) {
+        dump(data[indexpath.row])
+    }
 }
 
 extension SearchResultsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -59,5 +67,26 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
         }
         cell.configure(with: data[indexPath.row].posterPath ?? "")
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let movie = data[indexPath.row]
+        guard
+            let movieTitle = movie.originalTitle ?? movie.originalName,
+            let movieOverview = movie.overview
+        else { return }
+        
+        APIManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
+            guard let self = self else { return }
+            switch results {
+            case .success(let movieDetail):
+                let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
+                delegate?.didTap(vm: vm)
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 }

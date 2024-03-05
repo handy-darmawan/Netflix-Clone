@@ -64,4 +64,31 @@ extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         140
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let movie = data[indexPath.row]
+        guard 
+            let movieTitle = movie.originalTitle ?? movie.originalName,
+            let movieOverview = movie.overview
+        else { return }
+        
+        APIManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
+            guard let self = self else { return }
+            switch results {
+            case .success(let movieDetail):
+                DispatchQueue.main.async {
+                    let vc = TitlePreviewViewController()
+                    
+                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
+                    vc.configure(with: vm)
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+    }
 }
