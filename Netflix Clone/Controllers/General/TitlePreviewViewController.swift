@@ -72,7 +72,6 @@ class TitlePreviewViewController: UIViewController {
             downloadButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             downloadButton.widthAnchor.constraint(equalToConstant: 140),
             downloadButton.heightAnchor.constraint(equalToConstant: 50),
-            
             //            downloadButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -view.frame.height * 0.15)
         ])
     }

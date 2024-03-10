@@ -85,10 +85,23 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
         }
     }
     
+    func downloadTitleAt(indexPath: IndexPath) {
+        let movie = data[indexPath.row]
+        CoreDataDataSource.shared.save(movie: movie) { results in
+            switch results {
+            case .success(()):
+                print("Saved")
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         let config = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [ weak self ] _ in
+            guard let _ = self else { return nil}
             let downloadAction = UIAction(title: "Download", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                print(indexPaths[0])
+                self?.downloadTitleAt(indexPath: indexPaths[0])
             }
             return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [downloadAction])
         }
