@@ -12,6 +12,7 @@ class MainTabBarViewController: UITabBarController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
+        
         let homeVC = UINavigationController(rootViewController: HomeViewController())
         let upcomingVC = UINavigationController(rootViewController: UpcomingViewController())
         let searchVC = UINavigationController(rootViewController: SearchViewController())
