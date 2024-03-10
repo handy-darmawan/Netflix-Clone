@@ -32,4 +32,3 @@ class MainTabBarViewController: UITabBarController {
         setViewControllers([homeVC, upcomingVC, searchVC, downloadVC], animated: true)
     }
 }
-
