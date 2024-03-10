@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SearchResultsViewControllerDelegate: AnyObject {
-    func didTap(vm: TitlePreviewViewModel)
+    func didTap(vm: TitlePreviewViewModel, movie: Movie)
 }
 
 class SearchResultsViewController: UIViewController {
@@ -50,10 +50,6 @@ class SearchResultsViewController: UIViewController {
             self.collectionView.reloadData()
         }
     }
-    
-    private func downloadTitleAt(indexpath: IndexPath) {
-        dump(data[indexpath.row])
-    }
 }
 
 extension SearchResultsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -83,7 +79,7 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
             switch results {
             case .success(let movieDetail):
                 let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-                delegate?.didTap(vm: vm)
+                delegate?.didTap(vm: vm, movie: movie)
             case .failure(let error):
                 print(error)
             }

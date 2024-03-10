@@ -12,8 +12,11 @@ class HeroHeaderView: UIView {
     private var imageView: UIImageView!
     private var playButton: UIButton!
     private var downloadButton: UIButton!
+    private var movie: Movie?
+    var playButtonDidTapped: ((TitlePreviewViewModel) -> Void)?
 
-    override init(frame: CGRect) {
+    init(frame: CGRect, playButtonDidTapped: @escaping (TitlePreviewViewModel) -> Void) {
+        self.playButtonDidTapped = playButtonDidTapped
         super.init(frame: frame)
         setup()
     }
@@ -53,7 +56,35 @@ class HeroHeaderView: UIView {
     }
     
     @objc private func printers(_ sender: UIButton) {
-        print(sender.titleLabel!.text ?? "sender has no title")
+        guard 
+            let buttonLabel = sender.titleLabel?.text,
+            let movie = movie,
+            let title = movie.originalTitle ?? movie.originalName,
+            let titleOverview = movie.overview
+        else { return }
+        
+        if buttonLabel == "Play" {
+            APIManager.shared.getMovieDetail(with: title + " trailer") { results in
+                switch results {
+                case .success(let results):
+                    let vm = TitlePreviewViewModel(title: title, youtubeView: results, titleOverview: titleOverview)
+                    
+                    guard let playButtonDidTapped = self.playButtonDidTapped else { return }
+                    playButtonDidTapped(vm)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        } else if buttonLabel == "Download" {
+            CoreDataDataSource.shared.save(movie: movie) { results in
+                switch results {
+                case .success:
+                    print("Movie saved")
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        }
     }
     
     private func setupPlayButton() {
@@ -90,8 +121,12 @@ class HeroHeaderView: UIView {
         ])
     }
     
-    func configure(with imagePath: String) {
-        guard let url = URL(string: "https://image.tmdb.org/t/p/w500\(imagePath))") else { return }
+    func configure(with movie: Movie) {
+        self.movie = movie
+        guard
+            let imagePath = movie.posterPath,
+            let url = URL(string: "https://image.tmdb.org/t/p/w500\(imagePath))")
+        else { return }
         imageView.sd_setImage(with: url, completed: nil)
     }
 }

@@ -82,7 +82,7 @@ extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
                     let vc = TitlePreviewViewController()
                     
                     let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-                    vc.configure(with: vm)
+                    vc.configure(with: vm, movie: movie)
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
             case .failure(let error):

@@ -12,7 +12,7 @@ import UIKit
  1. HomeViewController -> Use Composional layout to make the layout and fill the data with NSDiffableDataSource
  2. HeroHeaderView -> Use UIStackView to make autolayout in button
  3. APIManager -> Too much boiler plate code to fetch and parsing API
-            -> Fix the structure of API Manager
+ -> Fix the structure of API Manager
  */
 
 enum Sections: CaseIterable {
@@ -58,13 +58,21 @@ class HomeViewController: UIViewController {
     var randomMovie: Movie?
     var heroHeaderView: HeroHeaderView?
     
-    
     private(set) var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.register(CollectionViewTableViewCell.self, forCellReuseIdentifier: CollectionViewTableViewCell.reuseIdentifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
+    
+    private func playButtonDidTapped(_ vm: TitlePreviewViewModel) {
+        guard let movie = randomMovie else { return }
+        DispatchQueue.main.async {
+            let vc = TitlePreviewViewController()
+            vc.configure(with: vm, movie: movie)
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,7 +83,7 @@ class HomeViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        heroHeaderView = HeroHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 450))
+        heroHeaderView = HeroHeaderView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 450), playButtonDidTapped: playButtonDidTapped)
         tableView.tableHeaderView = heroHeaderView
         
         configureNavbar()
@@ -87,12 +95,9 @@ class HomeViewController: UIViewController {
             guard let self = self else { return }
             switch results {
             case .success(let movies):
-                let movie = movies.randomElement()
+                guard let movie = movies.randomElement() else { return }
                 randomMovie = movie
-                if let moviePoster = movie?.posterPath {
-                    heroHeaderView?.configure(with: moviePoster)
-                    
-                }
+                heroHeaderView?.configure(with: movie)
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -212,12 +217,12 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension HomeViewController: CollectionItemDelegate {
-    func cellDidTapped(_ cell: CollectionViewTableViewCell, vm: TitlePreviewViewModel) {
+    func cellDidTapped(_ cell: CollectionViewTableViewCell, vm: TitlePreviewViewModel, movie: Movie) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             
             let vc = TitlePreviewViewController()
-            vc.configure(with: vm)
+            vc.configure(with: vm, movie: movie)
             navigationController?.pushViewController(vc, animated: true)
         }
     }
