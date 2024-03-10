@@ -24,11 +24,11 @@ class CoreDataManager {
     
     lazy var context = persistentContainer.viewContext
     
-    func saveContext() {
+    func saveContext() throws {
         do {
             try context.save()
         } catch {
-            fatalError("Unresolved error \(error)")
+            throw error
         }
     }
 }

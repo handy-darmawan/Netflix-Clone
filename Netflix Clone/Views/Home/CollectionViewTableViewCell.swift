@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CollectionItemDelegate: AnyObject {
-    func cellDidTapped(_ cell: CollectionViewTableViewCell, vm: TitlePreviewViewModel)
+    func cellDidTapped(_ cell: CollectionViewTableViewCell, vm: TitlePreviewViewModel, movie: Movie)
 }
 
 class CollectionViewTableViewCell: UITableViewCell {
@@ -77,7 +77,7 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
                 switch results {
                 case .success(let results):
                     let vm = TitlePreviewViewModel(title: title, youtubeView: results, titleOverview: data[indexPath.item].overview ?? "This is an overview")
-                    delegate?.cellDidTapped(self, vm: vm)
+                    delegate?.cellDidTapped(self, vm: vm, movie: data[indexPath.row])
                 case .failure(let error):
                     print(error.localizedDescription)
                 }

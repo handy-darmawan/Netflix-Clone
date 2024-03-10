@@ -87,7 +87,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
                 DispatchQueue.main.async {
                     let vc = TitlePreviewViewController()
                     let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-                    vc.configure(with: vm)
+                    vc.configure(with: vm, movie: movie)
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
             case .failure(let error):
@@ -120,12 +120,12 @@ extension SearchViewController: UISearchResultsUpdating {
 }
 
 extension SearchViewController: SearchResultsViewControllerDelegate {
-    func didTap(vm: TitlePreviewViewModel) {
+    func didTap(vm: TitlePreviewViewModel, movie: Movie) {
         //push to the next view controller
         DispatchQueue.main.async { [ weak self] in
             guard let self = self else { return }
             let vc = TitlePreviewViewController()
-            vc.configure(with: vm)
+            vc.configure(with: vm, movie: movie)
             navigationController?.pushViewController(vc, animated: true)
         }
     }
