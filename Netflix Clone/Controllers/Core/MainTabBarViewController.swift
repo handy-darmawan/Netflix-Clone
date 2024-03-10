@@ -30,6 +30,7 @@ class MainTabBarViewController: UITabBarController {
         
         tabBar.tintColor = .label
         
+        
         setViewControllers([homeVC, upcomingVC, searchVC, downloadVC], animated: true)
     }
 }
