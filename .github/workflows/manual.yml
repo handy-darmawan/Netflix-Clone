@@ -4,7 +4,7 @@ name: Auto PR Main Branch
 
 on:
   push:
-    branch:
+    branches:
       - feature/*
 
 jobs:
@@ -12,11 +12,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '20.x'
+      
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
   
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GH_TOKEN }}
           branch: main
