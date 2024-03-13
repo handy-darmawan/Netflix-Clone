@@ -12,6 +12,7 @@ class MainTabBarViewController: UITabBarController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
+        
         let homeVC = UINavigationController(rootViewController: HomeViewController())
         let upcomingVC = UINavigationController(rootViewController: UpcomingViewController())
         let searchVC = UINavigationController(rootViewController: SearchViewController())
@@ -29,7 +30,7 @@ class MainTabBarViewController: UITabBarController {
         
         tabBar.tintColor = .label
         
+        
         setViewControllers([homeVC, upcomingVC, searchVC, downloadVC], animated: true)
     }
 }
-
