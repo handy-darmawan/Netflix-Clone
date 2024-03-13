@@ -1,5 +1,5 @@
 //
-//  APIManager.swift
+//  NetworkManager.swift
 //  Netflix Clone
 //
 //  Created by ndyyy on 28/02/24.
@@ -27,8 +27,8 @@ enum APIError: Error {
     }
 }
 
-class APIManager {
-    static let shared = APIManager()
+class NetworkManager {
+    static let shared = NetworkManager()
     
     func getTrendingMovies(completion: @escaping (Result<[Movie], Error>) -> Void) {
         let urlString = "\(Constants.baseURL)/trending/movie/day?api_key=\(Constants.API_KEY)"

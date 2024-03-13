@@ -64,7 +64,7 @@ class HeroHeaderView: UIView {
         else { return }
         
         if buttonLabel == "Play" {
-            APIManager.shared.getMovieDetail(with: title + " trailer") { results in
+            NetworkManager.shared.getMovieDetail(with: title + " trailer") { results in
                 switch results {
                 case .success(let results):
                     let vm = TitlePreviewViewModel(title: title, youtubeView: results, titleOverview: titleOverview)

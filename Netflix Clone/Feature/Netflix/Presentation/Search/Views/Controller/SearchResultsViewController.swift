@@ -74,7 +74,7 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
             let movieOverview = movie.overview
         else { return }
         
-        APIManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
+        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
             guard let self = self else { return }
             switch results {
             case .success(let movieDetail):

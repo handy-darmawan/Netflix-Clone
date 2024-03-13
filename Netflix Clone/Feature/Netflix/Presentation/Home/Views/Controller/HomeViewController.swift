@@ -11,7 +11,7 @@ import UIKit
  Update:
  1. HomeViewController -> Use Composional layout to make the layout and fill the data with NSDiffableDataSource
  2. HeroHeaderView -> Use UIStackView to make autolayout in button
- 3. APIManager -> Too much boiler plate code to fetch and parsing API
+ 3. NetworkManager -> Too much boiler plate code to fetch and parsing API
  -> Fix the structure of API Manager
  */
 
@@ -91,7 +91,7 @@ class HomeViewController: UIViewController {
     }
     
     func setHeroHeaderView() {
-        APIManager.shared.getTrendingMovies { [weak self] results in
+        NetworkManager.shared.getTrendingMovies { [weak self] results in
             guard let self = self else { return }
             switch results {
             case .success(let movies):
@@ -139,7 +139,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch indexPath.section {
         case Sections.popular.value:
-            APIManager.shared.getPopular { result in
+            NetworkManager.shared.getPopular { result in
                 switch result {
                 case .success(let response):
                     cell.configure(with: response)
@@ -148,7 +148,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             }
         case Sections.trendingMovies.value:
-            APIManager.shared.getTrendingMovies { result in
+            NetworkManager.shared.getTrendingMovies { result in
                 switch result {
                 case .success(let response):
                     cell.configure(with: response)
@@ -157,7 +157,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             }
         case Sections.trendingTV.value:
-            APIManager.shared.getTrendingTv { result in
+            NetworkManager.shared.getTrendingTv { result in
                 switch result {
                 case .success(let response):
                     cell.configure(with: response)
@@ -166,7 +166,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             }
         case Sections.upcomingMovies.value:
-            APIManager.shared.getUpcomingMovie { result in
+            NetworkManager.shared.getUpcomingMovie { result in
                 switch result {
                 case .success(let response):
                     cell.configure(with: response)
@@ -175,7 +175,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 }
             }
         case Sections.topRated.value:
-            APIManager.shared.getTopRated { result in
+            NetworkManager.shared.getTopRated { result in
                 switch result {
                 case .success(let response):
                     cell.configure(with: response)

@@ -36,7 +36,7 @@ class UpcomingViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
-        APIManager.shared.getUpcomingMovie { [weak self] result in
+        NetworkManager.shared.getUpcomingMovie { [weak self] result in
             switch result {
             case .success(let movies):
                 self?.data = movies
@@ -74,7 +74,7 @@ extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
             let movieOverview = movie.overview
         else { return }
         
-        APIManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
+        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
             guard let self = self else { return }
             switch results {
             case .success(let movieDetail):

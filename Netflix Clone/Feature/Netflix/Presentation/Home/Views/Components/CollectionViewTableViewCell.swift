@@ -72,7 +72,7 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
         collectionView.deselectItem(at: indexPath, animated: true)
         
         if let title = data[indexPath.row].originalName ?? data[indexPath.row].originalTitle {
-            APIManager.shared.getMovieDetail(with: title + " trailer") { [weak self] results in
+            NetworkManager.shared.getMovieDetail(with: title + " trailer") { [weak self] results in
                 guard let self = self else { return }
                 switch results {
                 case .success(let results):
