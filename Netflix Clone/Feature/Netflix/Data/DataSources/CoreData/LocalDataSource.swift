@@ -12,7 +12,7 @@ class LocalDataSource: LocalDataSourceProtocol {
     private var coreDataManager = CoreDataManager.shared
     static let shared = LocalDataSource()
     
-    func fetchAll(completion: @escaping (Result<[Movie], Error>) -> Void) async {
+    func fetchMovies(completion: @escaping (Result<[Movie], Error>) -> Void) async {
         let request = NSFetchRequest<Netflix>(entityName: "Netflix")
         
         do {
@@ -25,7 +25,7 @@ class LocalDataSource: LocalDataSourceProtocol {
         }
     }
     
-    func save(movie: Movie, completion: @escaping (Result<Void, Error>) -> Void) async {
+    func saveMovie(with movie: Movie, completion: @escaping (Result<Void, Error>) -> Void) async {
         //check to db, is there an existing movie
         let request = NSFetchRequest<Netflix>(entityName: "Netflix")
         request.predicate = NSPredicate(format: "id = %@", NSNumber(value: movie.id))
@@ -49,7 +49,7 @@ class LocalDataSource: LocalDataSourceProtocol {
         }
     }
     
-    func delete(movie: Movie, completion: @escaping (Result<Void, Error>) -> Void) async {
+    func deleteMovie(with movie: Movie, completion: @escaping (Result<Void, Error>) -> Void) async {
         let request = NSFetchRequest<Netflix>(entityName: "Netflix")
         request.predicate = NSPredicate(format: "id = %@", NSNumber(value: movie.id))
         guard let results = try? coreDataManager.context.fetch(request) else {

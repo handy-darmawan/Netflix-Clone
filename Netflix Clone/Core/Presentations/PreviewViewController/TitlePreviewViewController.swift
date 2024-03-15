@@ -58,7 +58,7 @@ class TitlePreviewViewController: UIViewController {
     @objc
     private func downloadButtonTapped(sender: UIButton) {
         guard let movie = movie else { return }
-        CoreDataDataSource.shared.save(movie: movie) { results in
+        CoreDataDataSource.shared.saveMovie(with movie: movie) { results in
             switch results {
             case .success:
                 print("Movie saved")

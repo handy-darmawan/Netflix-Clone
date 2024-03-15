@@ -25,7 +25,7 @@ class MovieNetworkDataSource: MovieNetworkDataSourceProtocol {
         self.networkManager = networkManager
     }
     
-    private func fetchAll(from urlString: String, completion: @escaping (Result<[Movie], Error>) -> Void) async {
+    private func fetch(from urlString: String, completion: @escaping (Result<[Movie], Error>) -> Void) async {
         if let url = URL(string: urlString) {
             let request = URLRequest(url: url)
             
