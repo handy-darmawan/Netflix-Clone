@@ -10,6 +10,10 @@
 		8004672F2B937C810060E055 /* TitlePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8004672E2B937C810060E055 /* TitlePreviewViewController.swift */; };
 		800467312B937DC90060E055 /* TitlePreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800467302B937DC90060E055 /* TitlePreviewViewModel.swift */; };
 		800FDC112B91E076000ED4F0 /* Youtube.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800FDC102B91E076000ED4F0 /* Youtube.swift */; };
+		801A715A2BA6C43000086382 /* MovieDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A71592BA6C43000086382 /* MovieDTO.swift */; };
+		801A715C2BA6C4AC00086382 /* MovieDTOMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A715B2BA6C4AC00086382 /* MovieDTOMapper.swift */; };
+		801A715E2BA6C59C00086382 /* YoutubeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A715D2BA6C59C00086382 /* YoutubeDTO.swift */; };
+		801A71602BA6C5A200086382 /* YoutubeDTOMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A715F2BA6C5A200086382 /* YoutubeDTOMapper.swift */; };
 		805AB22D2B8C8DBF00ADB8BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB22C2B8C8DBF00ADB8BD /* AppDelegate.swift */; };
 		805AB22F2B8C8DBF00ADB8BD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB22E2B8C8DBF00ADB8BD /* SceneDelegate.swift */; };
 		805AB2312B8C8DBF00ADB8BD /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB2302B8C8DBF00ADB8BD /* MainTabBarViewController.swift */; };
@@ -36,6 +40,10 @@
 		8004672E2B937C810060E055 /* TitlePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitlePreviewViewController.swift; sourceTree = "<group>"; };
 		800467302B937DC90060E055 /* TitlePreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitlePreviewViewModel.swift; sourceTree = "<group>"; };
 		800FDC102B91E076000ED4F0 /* Youtube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Youtube.swift; sourceTree = "<group>"; };
+		801A71592BA6C43000086382 /* MovieDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDTO.swift; sourceTree = "<group>"; };
+		801A715B2BA6C4AC00086382 /* MovieDTOMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDTOMapper.swift; sourceTree = "<group>"; };
+		801A715D2BA6C59C00086382 /* YoutubeDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeDTO.swift; sourceTree = "<group>"; };
+		801A715F2BA6C5A200086382 /* YoutubeDTOMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeDTOMapper.swift; sourceTree = "<group>"; };
 		805AB2292B8C8DBF00ADB8BD /* Netflix Clone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Netflix Clone.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		805AB22C2B8C8DBF00ADB8BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		805AB22E2B8C8DBF00ADB8BD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -71,6 +79,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		801A71572BA6C42600086382 /* Movie */ = {
+			isa = PBXGroup;
+			children = (
+				801A71592BA6C43000086382 /* MovieDTO.swift */,
+				801A715B2BA6C4AC00086382 /* MovieDTOMapper.swift */,
+			);
+			path = Movie;
+			sourceTree = "<group>";
+		};
+		801A71582BA6C42900086382 /* Youtube */ = {
+			isa = PBXGroup;
+			children = (
+				801A715D2BA6C59C00086382 /* YoutubeDTO.swift */,
+				801A715F2BA6C5A200086382 /* YoutubeDTOMapper.swift */,
+			);
+			path = Youtube;
+			sourceTree = "<group>";
+		};
 		801ED6FD2BA16C48002C931A /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -260,6 +286,8 @@
 		80EF1E762BA1ABC500A0601D /* DataTransferObject */ = {
 			isa = PBXGroup;
 			children = (
+				801A71582BA6C42900086382 /* Youtube */,
+				801A71572BA6C42600086382 /* Movie */,
 			);
 			path = DataTransferObject;
 			sourceTree = "<group>";
@@ -513,8 +541,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				805AB2482B8C98B700ADB8BD /* SearchViewController.swift in Sources */,
+				80C1C6C62BA4A30B00139A4D /* YoutubeUseCase.swift in Sources */,
+				801A71602BA6C5A200086382 /* YoutubeDTOMapper.swift in Sources */,
 				805AB2312B8C8DBF00ADB8BD /* MainTabBarViewController.swift in Sources */,
 				805B75BB2B90C09B0046FDC8 /* TitleTableViewCell.swift in Sources */,
+				801A715C2BA6C4AC00086382 /* MovieDTOMapper.swift in Sources */,
 				80E8E9672B9B0B820094AEFB /* CoreDataManager.swift in Sources */,
 				80F146422B9B0777006FF2E1 /* NetflixDatabase.xcdatamodeld in Sources */,
 				80E8E96B2B9B0EA00094AEFB /* CoreDataDataSource.swift in Sources */,
@@ -527,6 +558,14 @@
 				805B75BF2B90E5370046FDC8 /* SearchResultsViewController.swift in Sources */,
 				805AB22F2B8C8DBF00ADB8BD /* SceneDelegate.swift in Sources */,
 				805AB2462B8C98AE00ADB8BD /* UpcomingViewController.swift in Sources */,
+				80C1C6DE2BA4A56200139A4D /* GetDiscoverMoviesUseCase.swift in Sources */,
+				80C1C6B52BA49E4500139A4D /* LocalDataSourceProtocol.swift in Sources */,
+				801A715E2BA6C59C00086382 /* YoutubeDTO.swift in Sources */,
+				80C1C6C82BA4A3CD00139A4D /* GetMovieUseCaseProtocol.swift in Sources */,
+				80C1C6D62BA4A54800139A4D /* FetchUseCase.swift in Sources */,
+				801A715A2BA6C43000086382 /* MovieDTO.swift in Sources */,
+				80A165E32BA1F41000AAD8B4 /* MovieRepository.swift in Sources */,
+				80C1C6CA2BA4A3D300139A4D /* GetMovieUseCase.swift in Sources */,
 				80DC805A2B8F7AEB001BF7F3 /* TitleCollectionViewCell.swift in Sources */,
 				8004672F2B937C810060E055 /* TitlePreviewViewController.swift in Sources */,
 				800FDC112B91E076000ED4F0 /* Youtube.swift in Sources */,

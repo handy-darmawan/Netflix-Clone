@@ -2,13 +2,16 @@
 //  Movie.swift
 //  Netflix Clone
 //
-//  Created by ndyyy on 28/02/24.
+//  Created by ndyyy on 17/03/24.
 //
 
 import Foundation
-import CoreData
 
-struct Movie: Hashable {
+struct MovieResponse: Codable {
+    let results: [MovieDTO]
+}
+
+struct MovieDTO: Codable {
     let id: Int
     let mediaType: String?
     let originalName: String?

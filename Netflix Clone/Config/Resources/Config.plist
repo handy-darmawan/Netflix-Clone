@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>youtube_api_key</key>
+	<string>AIzaSyA7YKq5MQJMp4zVz6w8WEmVM1To1UH6P0A</string>
+	<key>tmbd_api_key</key>
+	<string>9943c87add787cf0d01cb9c33aa93d13</string>
+</dict>
+</plist>
