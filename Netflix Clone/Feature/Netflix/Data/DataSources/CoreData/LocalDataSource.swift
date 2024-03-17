@@ -1,5 +1,5 @@
 //
-//  CoreDataDataSource.swift
+//  LocalDataSource.swift
 //  Netflix Clone
 //
 //  Created by ndyyy on 08/03/24.
@@ -8,11 +8,11 @@
 import Foundation
 import CoreData
 
-class CoreDataDataSource {
+class LocalDataSource: LocalDataSourceProtocol {
     private var coreDataManager = CoreDataManager.shared
-    static let shared = CoreDataDataSource()
+    static let shared = LocalDataSource()
     
-    func fetch(completion: @escaping (Result<[Movie], Error>) -> Void) {
+    func fetchMovies(completion: @escaping (Result<[Movie], Error>) -> Void) async {
         let request = NSFetchRequest<Netflix>(entityName: "Netflix")
         
         do {
@@ -25,7 +25,7 @@ class CoreDataDataSource {
         }
     }
     
-    func save(movie: Movie, completion: @escaping (Result<Void, Error>) -> Void) {
+    func saveMovie(with movie: Movie, completion: @escaping (Result<Void, Error>) -> Void) async {
         //check to db, is there an existing movie
         let request = NSFetchRequest<Netflix>(entityName: "Netflix")
         request.predicate = NSPredicate(format: "id = %@", NSNumber(value: movie.id))
@@ -49,7 +49,7 @@ class CoreDataDataSource {
         }
     }
     
-    func delete(movie: Movie, completion: @escaping (Result<Void, Error>) -> Void) {
+    func deleteMovie(with movie: Movie, completion: @escaping (Result<Void, Error>) -> Void) async {
         let request = NSFetchRequest<Netflix>(entityName: "Netflix")
         request.predicate = NSPredicate(format: "id = %@", NSNumber(value: movie.id))
         guard let results = try? coreDataManager.context.fetch(request) else {
@@ -57,7 +57,7 @@ class CoreDataDataSource {
         }
 
         do {
-            results.forEach { coreDataManager.context.delete($0)}
+            results.forEach { coreDataManager.context.delete($0) }
             try coreDataManager.saveContext()
 
             completion(.success(()))
