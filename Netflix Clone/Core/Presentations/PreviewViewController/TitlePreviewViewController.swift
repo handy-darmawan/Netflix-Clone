@@ -58,14 +58,14 @@ class TitlePreviewViewController: UIViewController {
     @objc
     private func downloadButtonTapped(sender: UIButton) {
         guard let movie = movie else { return }
-        CoreDataDataSource.shared.saveMovie(with movie: movie) { results in
-            switch results {
-            case .success:
-                print("Movie saved")
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        CoreDataDataSource.shared.saveMovie(with movie: movie) { results in
+//            switch results {
+//            case .success:
+//                print("Movie saved")
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
     }
     
     private func configureConstraints() {
@@ -91,12 +91,12 @@ class TitlePreviewViewController: UIViewController {
         ])
     }
     
-    func configure(with viewModel: TitlePreviewViewModel, movie: Movie) {
-        self.movie = movie
-        titleLabel.text = viewModel.title
-        overviewLabel.text = viewModel.titleOverview
-        guard let url = URL(string: "https://www.youtube.com/watch?v=" + viewModel.youtubeView.id.videoId) else { return }
-        webView.load(URLRequest(url: url))
-    }
+//    func configure(with viewModel: TitlePreviewViewModel, movie: Movie) {
+//        self.movie = movie
+//        titleLabel.text = viewModel.title
+//        overviewLabel.text = viewModel.titleOverview
+//        guard let url = URL(string: "https://www.youtube.com/watch?v=" + viewModel.youtubeView.id.videoId) else { return }
+//        webView.load(URLRequest(url: url))
+//    }
     
 }

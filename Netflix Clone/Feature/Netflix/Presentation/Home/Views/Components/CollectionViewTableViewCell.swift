@@ -7,15 +7,15 @@
 
 import UIKit
 
-protocol CollectionItemDelegate: AnyObject {
-    func cellDidTapped(_ cell: CollectionViewTableViewCell, vm: TitlePreviewViewModel, movie: Movie)
-}
+//protocol CollectionItemDelegate: AnyObject {
+//    func cellDidTapped(_ cell: CollectionViewTableViewCell, vm: TitlePreviewViewModel, movie: Movie)
+//}
 
 class CollectionViewTableViewCell: UITableViewCell {
     static let reuseIdentifier = "CollectionViewTableViewCell"
     private var data: [Movie] = []
     
-    weak var delegate: CollectionItemDelegate?
+//    weak var delegate: CollectionItemDelegate?
     
     private(set) var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -72,29 +72,29 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
         collectionView.deselectItem(at: indexPath, animated: true)
         
         if let title = data[indexPath.row].originalName ?? data[indexPath.row].originalTitle {
-            NetworkManager.shared.getMovieDetail(with: title + " trailer") { [weak self] results in
-                guard let self = self else { return }
-                switch results {
-                case .success(let results):
-                    let vm = TitlePreviewViewModel(title: title, youtubeView: results, titleOverview: data[indexPath.item].overview ?? "This is an overview")
-                    delegate?.cellDidTapped(self, vm: vm, movie: data[indexPath.row])
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
+//            NetworkManager.shared.getMovieDetail(with: title + " trailer") { [weak self] results in
+//                guard let self = self else { return }
+//                switch results {
+//                case .success(let results):
+//                    let vm = TitlePreviewViewModel(title: title, youtubeView: results, titleOverview: data[indexPath.item].overview ?? "This is an overview")
+//                    delegate?.cellDidTapped(self, vm: vm, movie: data[indexPath.row])
+//                case .failure(let error):
+//                    print(error.localizedDescription)
+//                }
+//            }
         }
     }
     
     func downloadTitleAt(indexPath: IndexPath) {
         let movie = data[indexPath.row]
-        CoreDataDataSource.shared.save(movie: movie) { results in
-            switch results {
-            case .success(()):
-                print("Saved")
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
+//        CoreDataDataSource.shared.save(movie: movie) { results in
+//            switch results {
+//            case .success(()):
+//                print("Saved")
+//            case .failure(let error):
+//                print(error.localizedDescription)
+//            }
+//        }
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {

@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct TitlePreviewViewModel {
-    let title: String
-    let youtubeView: YoutubeVideo
-    let titleOverview: String
-}
+//struct TitlePreviewViewModel {
+//    let title: String
+//    let youtubeView: YoutubeVideo
+//    let titleOverview: String
+//}
