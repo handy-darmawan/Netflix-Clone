@@ -36,17 +36,17 @@ class UpcomingViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
-        NetworkManager.shared.getUpcomingMovie { [weak self] result in
-            switch result {
-            case .success(let movies):
-                self?.data = movies
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        NetworkManager.shared.getUpcomingMovie { [weak self] result in
+//            switch result {
+//            case .success(let movies):
+//                self?.data = movies
+//                DispatchQueue.main.async {
+//                    self?.tableView.reloadData()
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
     }
 }
 
@@ -74,21 +74,21 @@ extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
             let movieOverview = movie.overview
         else { return }
         
-        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
-            guard let self = self else { return }
-            switch results {
-            case .success(let movieDetail):
-                DispatchQueue.main.async {
-                    let vc = TitlePreviewViewController()
-                    
-                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-                    vc.configure(with: vm, movie: movie)
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
+//            guard let self = self else { return }
+//            switch results {
+//            case .success(let movieDetail):
+//                DispatchQueue.main.async {
+//                    let vc = TitlePreviewViewController()
+//                    
+//                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
+//                    vc.configure(with: vm, movie: movie)
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
         
     }
 }

@@ -7,14 +7,14 @@
 
 import UIKit
 
-protocol SearchResultsViewControllerDelegate: AnyObject {
-    func didTap(vm: TitlePreviewViewModel, movie: Movie)
-}
+//protocol SearchResultsViewControllerDelegate: AnyObject {
+//    func didTap(vm: TitlePreviewViewModel, movie: Movie)
+//}
 
 class SearchResultsViewController: UIViewController {
     
     var data: [Movie] = []
-    weak var delegate: SearchResultsViewControllerDelegate?
+//    weak var delegate: SearchResultsViewControllerDelegate?
     
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -74,15 +74,15 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
             let movieOverview = movie.overview
         else { return }
         
-        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
-            guard let self = self else { return }
-            switch results {
-            case .success(let movieDetail):
-                let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-                delegate?.didTap(vm: vm, movie: movie)
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
+//            guard let self = self else { return }
+//            switch results {
+//            case .success(let movieDetail):
+//                let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
+//                delegate?.didTap(vm: vm, movie: movie)
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
     }
 }
