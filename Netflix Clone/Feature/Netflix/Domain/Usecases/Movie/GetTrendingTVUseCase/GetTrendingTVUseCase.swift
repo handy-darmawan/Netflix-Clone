@@ -8,8 +8,8 @@
 import Foundation
 
 class GetTrendingTVUseCase: MovieUseCase, MovieActionUseCaseProtocol {
-    func execute() async -> Result<[Movie], Error> {
-        return await movieRepository.getTrendingTV()
+    func execute() async throws -> [Movie] {
+        try await movieRepository.getTrendingTV()
     }
 }
 

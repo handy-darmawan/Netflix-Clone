@@ -8,7 +8,7 @@
 import Foundation
 
 class GetTrendingMoviesUseCase: MovieUseCase, MovieActionUseCaseProtocol {
-    func execute() async -> Result<[Movie], Error> {
-        return await movieRepository.getTrendingMovies()
+    func execute() async throws -> [Movie] {
+        try await movieRepository.getTrendingMovies()
     }
 }

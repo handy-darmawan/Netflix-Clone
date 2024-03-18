@@ -8,7 +8,7 @@
 import Foundation
 
 class DeleteUseCase: MovieUseCase, MoviePersistenceUseCaseProtocol {
-    func execute(with movie: Movie) async -> Result<Void, Error> {
-        await movieRepository.deleteMovie(with: movie)
+    func execute(with movie: Movie) async throws {
+        try await movieRepository.deleteMovie(with: movie)
     }
 }

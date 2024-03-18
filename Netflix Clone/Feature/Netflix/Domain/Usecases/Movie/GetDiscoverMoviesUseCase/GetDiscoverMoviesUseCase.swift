@@ -8,7 +8,7 @@
 import Foundation
 
 class GetDiscoverMoviesUseCase: MovieUseCase, MovieActionUseCaseProtocol {
-    func execute() async -> Result<[Movie], Error> {
-        return await movieRepository.getDiscoverMovies()
+    func execute() async throws -> [Movie]  {
+        try await movieRepository.getDiscoverMovies()
     }
 }

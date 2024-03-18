@@ -8,5 +8,5 @@
 import Foundation
 
 protocol GetMovieUseCaseProtocol {
-    func execute(with query: String) async -> Result<Youtube, Error>
+    func execute(with query: String) async throws -> Youtube
 }

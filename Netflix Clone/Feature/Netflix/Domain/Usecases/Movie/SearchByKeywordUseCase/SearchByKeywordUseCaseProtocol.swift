@@ -8,5 +8,5 @@
 import Foundation
 
 protocol SearchByKeywordUseCaseProtocol {
-    func execute(with keyword: String) async -> Result<[Movie], Error>
+    func execute(with keyword: String) async throws -> [Movie] 
 }
