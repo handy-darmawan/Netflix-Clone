@@ -8,7 +8,7 @@
 import Foundation
 
 protocol LocalDataSourceProtocol {
-    func fetchMovies(completion: @escaping (Result<[Movie], Error>) -> Void) async
-    func saveMovie(with movie: Movie, completion: @escaping (Result<Void, Error>) -> Void) async
-    func deleteMovie(with movie: Movie, completion: @escaping (Result<Void, Error>) -> Void) async
+    func fetchMovies() async throws -> [Movie]
+    func saveMovie(with movie: Movie) async throws
+    func deleteMovie(with movie: Movie) async throws
 }
