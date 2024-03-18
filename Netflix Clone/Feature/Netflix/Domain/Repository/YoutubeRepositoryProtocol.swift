@@ -8,5 +8,5 @@
 import Foundation
 
 protocol YoutubeRepositoryProtocol {
-    func getMovie(with query: String) async -> Result<Youtube, Error>
+    func getMovie(with query: String) async throws -> Youtube
 }

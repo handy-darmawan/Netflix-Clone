@@ -8,16 +8,16 @@
 import Foundation
 
 protocol MovieRepositoryProtocol {
-    func getTrendingMovies() async -> Result<[Movie], Error>
-    func getTrendingTV() async -> Result<[Movie], Error>
-    func getPopular() async -> Result<[Movie], Error>
-    func getTopRated() async -> Result<[Movie], Error>
-    func getUpcomingMovies() async -> Result<[Movie], Error>
-    func getDiscoverMovies() async -> Result<[Movie], Error>
-    func searchByKeyword(_ keyword: String) async -> Result<[Movie], Error>
+    func getTrendingMovies() async throws -> [Movie]
+    func getTrendingTV() async throws -> [Movie]
+    func getPopular() async throws -> [Movie]
+    func getTopRated() async throws -> [Movie]
+    func getUpcomingMovies() async throws -> [Movie]
+    func getDiscoverMovies() async throws -> [Movie]
+    func searchByKeyword(_ keyword: String) async throws -> [Movie]
     
     //Core Data
-    func fetchMovies() async -> Result<[Movie], Error>
-    func saveMovie(with movie: Movie) async -> Result<Void, Error>
-    func deleteMovie(with movie: Movie) async -> Result<Void, Error>
+    func fetchMovies() async throws -> [Movie]
+    func saveMovie(with movie: Movie) async throws
+    func deleteMovie(with movie: Movie) async throws
 }

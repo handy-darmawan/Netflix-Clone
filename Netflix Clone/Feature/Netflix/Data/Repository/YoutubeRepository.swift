@@ -8,11 +8,10 @@
 import Foundation
 
 class YoutubeRepository: YoutubeRepositoryProtocol {
+    static let shared = YoutubeRepository()
     private let networkDataSource = YoutubeNetworkDataSource()
-    private var result: Result<YoutubeVideo, Error>?
     
-    func getMovie(with query: String) async -> Result<YoutubeVideo, Error> {
-        await networkDataSource.getMovie(with: query) { self.result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+    func getMovie(with query: String) async throws -> Youtube {
+        return try await networkDataSource.getMovie(with: query)
     }
 }
