@@ -144,8 +144,8 @@ private extension HomeViewController {
             let itemSpacing = 5.0
             item.contentInsets = NSDirectionalEdgeInsets(top: itemSpacing, leading: itemSpacing, bottom: itemSpacing, trailing: itemSpacing)
             
-            let innerGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-            let innerGroup = NSCollectionLayoutGroup.horizontal(layoutSize: innerGroupSize, subitem: item, count: sectionKind.itemCount)
+            let innerGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0 / CGFloat(sectionKind.itemCount)), heightDimension: .fractionalHeight(1.0))
+            let innerGroup = NSCollectionLayoutGroup.horizontal(layoutSize: innerGroupSize, repeatingSubitem: item, count: sectionKind.itemCount)
             
             let groupSize = NSCollectionLayoutSize(widthDimension: sectionKind.groupWidth, heightDimension: sectionKind.groupHeight)
             let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [innerGroup])

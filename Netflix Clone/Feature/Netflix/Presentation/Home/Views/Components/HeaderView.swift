@@ -10,12 +10,7 @@ import UIKit
 class HeaderView: UICollectionReusableView {
     static let identifier = "headerView"
     
-    public lazy var textLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.preferredFont(forTextStyle: .headline)
-        return label
-    }()
+    private var textLabel: UILabel?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,6 +25,7 @@ class HeaderView: UICollectionReusableView {
 
 extension HeaderView {
     func configure(with title: String) {
+        guard let textLabel = textLabel else { return }
         textLabel.text = title
         textLabel.textColor = .white
         textLabel.textAlignment = .left
@@ -44,8 +40,15 @@ private extension HeaderView {
     }
     
     func setupLabelConstraints() {
-        addSubview(textLabel)
+        textLabel = UILabel()
+        
+        guard let textLabel = textLabel else { return }
+        
+        textLabel.textAlignment = .center
+        textLabel.font = UIFont.preferredFont(forTextStyle: .headline)
         textLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(textLabel)
         NSLayoutConstraint.activate([
             textLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             textLabel.centerXAnchor.constraint(equalTo: centerXAnchor),

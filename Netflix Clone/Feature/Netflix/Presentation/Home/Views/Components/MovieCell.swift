@@ -31,13 +31,12 @@ class MovieCell: UICollectionViewCell {
         self.movie = movie
         setImage(with: movie)
     }
-    
 }
 
 
 //MARK: Actions
 private extension MovieCell {
-    @objc func printers(_ sender: UIButton) {
+    @objc func buttonTapped(_ sender: UIButton) {
         guard
             let buttonLabel = sender.titleLabel?.text,
             let movie = movie,
@@ -110,7 +109,7 @@ private extension MovieCell {
         guard let movieImageView = movieImageView else { return }
         movieImageView.translatesAutoresizingMaskIntoConstraints = false
         movieImageView.clipsToBounds = true
-        movieImageView.contentMode = .scaleAspectFit
+        movieImageView.contentMode = .scaleAspectFill
         addSubview(movieImageView)
         
         NSLayoutConstraint.activate([
@@ -126,7 +125,7 @@ private extension MovieCell {
         guard let playButton = playButton else { return }
         playButton.translatesAutoresizingMaskIntoConstraints = false
         playButton.setTitle("Play", for: .normal)
-        playButton.addTarget(self, action: #selector(printers), for: .touchUpInside)
+        playButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         playButton.layer.borderWidth = 1
         playButton.layer.borderColor = UIColor.white.cgColor
         playButton.layer.cornerRadius = 5
@@ -144,7 +143,7 @@ private extension MovieCell {
         guard let downloadButton = downloadButton else { return }
         downloadButton.translatesAutoresizingMaskIntoConstraints = false
         downloadButton.setTitle("Download", for: .normal)
-        downloadButton.addTarget(self, action: #selector(printers), for: .touchUpInside)
+        downloadButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         downloadButton.layer.borderWidth = 1
         downloadButton.layer.borderColor = UIColor.white.cgColor
         downloadButton.layer.cornerRadius = 5

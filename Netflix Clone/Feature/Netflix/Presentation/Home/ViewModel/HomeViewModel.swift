@@ -115,7 +115,7 @@ extension HomeViewModel {
         }
         
         var groupHeight: NSCollectionLayoutDimension {
-            let height = 1.0
+            let height = 0.9
             switch self {
             case .header: return .fractionalHeight(height/2)
             default: return .fractionalHeight(height/3)
