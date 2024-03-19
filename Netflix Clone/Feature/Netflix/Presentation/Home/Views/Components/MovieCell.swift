@@ -8,11 +8,6 @@
 import UIKit
 import SDWebImage
 
-enum CellType {
-    case header
-    case normal
-}
-
 class MovieCell: UICollectionViewCell {
     static let identifier = "CellItem"
     
@@ -21,7 +16,6 @@ class MovieCell: UICollectionViewCell {
     private var downloadButton: UIButton?
     private var movie: Movie?
     //we need callback here to handle button
-    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -115,9 +109,8 @@ private extension MovieCell {
         movieImageView = UIImageView(frame: .zero)
         guard let movieImageView = movieImageView else { return }
         movieImageView.translatesAutoresizingMaskIntoConstraints = false
-        movieImageView.image = UIImage(named: "mock-underthedome")
         movieImageView.clipsToBounds = true
-        movieImageView.contentMode = .scaleAspectFill
+        movieImageView.contentMode = .scaleAspectFit
         addSubview(movieImageView)
         
         NSLayoutConstraint.activate([

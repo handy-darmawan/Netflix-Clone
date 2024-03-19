@@ -16,9 +16,10 @@
 		801A71602BA6C5A200086382 /* YoutubeDTOMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A715F2BA6C5A200086382 /* YoutubeDTOMapper.swift */; };
 		801A71622BA6FFB200086382 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A71612BA6FFB200086382 /* MovieCell.swift */; };
 		801A71642BA7018000086382 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A71632BA7018000086382 /* HomeViewModel.swift */; };
+		8054DCAF2BA9805400B8C356 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054DCAE2BA9805400B8C356 /* HeaderView.swift */; };
+		8054DCB22BA982FF00B8C356 /* CellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054DCB12BA982FF00B8C356 /* CellType.swift */; };
 		805AB22D2B8C8DBF00ADB8BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB22C2B8C8DBF00ADB8BD /* AppDelegate.swift */; };
 		805AB22F2B8C8DBF00ADB8BD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB22E2B8C8DBF00ADB8BD /* SceneDelegate.swift */; };
-		805AB2312B8C8DBF00ADB8BD /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB2302B8C8DBF00ADB8BD /* MainTabBarViewController.swift */; };
 		805AB2362B8C8DC100ADB8BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 805AB2352B8C8DC100ADB8BD /* Assets.xcassets */; };
 		805AB2442B8C98A700ADB8BD /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB2432B8C98A700ADB8BD /* HomeViewController.swift */; };
 		805AB2462B8C98AE00ADB8BD /* UpcomingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB2452B8C98AE00ADB8BD /* UpcomingViewController.swift */; };
@@ -90,10 +91,11 @@
 		801A715F2BA6C5A200086382 /* YoutubeDTOMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeDTOMapper.swift; sourceTree = "<group>"; };
 		801A71612BA6FFB200086382 /* MovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
 		801A71632BA7018000086382 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		8054DCAE2BA9805400B8C356 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
+		8054DCB12BA982FF00B8C356 /* CellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellType.swift; sourceTree = "<group>"; };
 		805AB2292B8C8DBF00ADB8BD /* Netflix Clone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Netflix Clone.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		805AB22C2B8C8DBF00ADB8BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		805AB22E2B8C8DBF00ADB8BD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		805AB2302B8C8DBF00ADB8BD /* MainTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarViewController.swift; sourceTree = "<group>"; };
 		805AB2352B8C8DC100ADB8BD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		805AB23A2B8C8DC100ADB8BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		805AB2432B8C98A700ADB8BD /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -211,7 +213,6 @@
 			isa = PBXGroup;
 			children = (
 				80EF1E8C2BA1B07A00A0601D /* CollectionViewCell */,
-				80EF1E892BA1B00700A0601D /* TabBarViewController */,
 				80EF1E882BA1AFF600A0601D /* PreviewViewController */,
 				80EF1E872BA1AFD700A0601D /* TableViewCell */,
 			);
@@ -234,6 +235,14 @@
 				80EF1E942BA1B4C500A0601D /* YoutubeNetworkManager.swift */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		8054DCB02BA982F900B8C356 /* Enum */ = {
+			isa = PBXGroup;
+			children = (
+				8054DCB12BA982FF00B8C356 /* CellType.swift */,
+			);
+			path = Enum;
 			sourceTree = "<group>";
 		};
 		805AB2202B8C8DBF00ADB8BD = {
@@ -543,6 +552,7 @@
 		80EF1E772BA1ABE700A0601D /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				8054DCB02BA982F900B8C356 /* Enum */,
 				80EF1E7B2BA1AC2000A0601D /* Views */,
 				80EF1E7C2BA1AC2400A0601D /* ViewModel */,
 			);
@@ -688,20 +698,13 @@
 			path = PreviewViewController;
 			sourceTree = "<group>";
 		};
-		80EF1E892BA1B00700A0601D /* TabBarViewController */ = {
-			isa = PBXGroup;
-			children = (
-				805AB2302B8C8DBF00ADB8BD /* MainTabBarViewController.swift */,
-			);
-			path = TabBarViewController;
-			sourceTree = "<group>";
-		};
 		80EF1E8B2BA1B06300A0601D /* Components */ = {
 			isa = PBXGroup;
 			children = (
 				80FBE8C42B8E25EA0083AC91 /* HeroHeaderView.swift */,
 				805AB2522B8CC8BD00ADB8BD /* CollectionViewTableViewCell.swift */,
 				801A71612BA6FFB200086382 /* MovieCell.swift */,
+				8054DCAE2BA9805400B8C356 /* HeaderView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -802,7 +805,7 @@
 				80C1C6C62BA4A30B00139A4D /* YoutubeUseCase.swift in Sources */,
 				801A71622BA6FFB200086382 /* MovieCell.swift in Sources */,
 				801A71602BA6C5A200086382 /* YoutubeDTOMapper.swift in Sources */,
-				805AB2312B8C8DBF00ADB8BD /* MainTabBarViewController.swift in Sources */,
+				8054DCB22BA982FF00B8C356 /* CellType.swift in Sources */,
 				805B75BB2B90C09B0046FDC8 /* TitleTableViewCell.swift in Sources */,
 				801A715C2BA6C4AC00086382 /* MovieDTOMapper.swift in Sources */,
 				80E8E9672B9B0B820094AEFB /* CoreDataManager.swift in Sources */,
@@ -832,6 +835,7 @@
 				80C1C6EE2BA4A59900139A4D /* GetTrendingTVUseCase.swift in Sources */,
 				805AB2462B8C98AE00ADB8BD /* UpcomingViewController.swift in Sources */,
 				80C1C6DE2BA4A56200139A4D /* GetDiscoverMoviesUseCase.swift in Sources */,
+				8054DCAF2BA9805400B8C356 /* HeaderView.swift in Sources */,
 				80C1C6B52BA49E4500139A4D /* LocalDataSourceProtocol.swift in Sources */,
 				801A715E2BA6C59C00086382 /* YoutubeDTO.swift in Sources */,
 				80C1C6C82BA4A3CD00139A4D /* GetMovieUseCaseProtocol.swift in Sources */,

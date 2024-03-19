@@ -9,6 +9,7 @@ import Foundation
 import CoreData
 
 struct Movie: Hashable {
+    var uuid = UUID().uuidString
     let id: Int
     let mediaType: String?
     let originalName: String?
@@ -18,4 +19,13 @@ struct Movie: Hashable {
     let voteCount: Int?
     let releaseDate: String?
     let voteAverage: Double?
+    
+//    func hash(into hasher: inout Hasher) {
+//        hasher.combine(uuid)
+//    }
+//    
+//    static func == (lhs: Movie, rhs: Movie) -> Bool {
+//        return lhs.uuid == rhs.uuid
+//    }
 }
+
