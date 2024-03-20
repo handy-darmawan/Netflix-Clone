@@ -8,7 +8,7 @@
 import Foundation
 
 class GetMovieUseCase: YoutubeUseCase, GetMovieUseCaseProtocol {
-    func execute(with query: String) async -> Result<Youtube, Error> {
-        await youtubeRepository.getMovie(with: query)
+    func execute(with query: String) async throws -> Youtube {
+        try await youtubeRepository.getMovie(with: query)
     }
 }

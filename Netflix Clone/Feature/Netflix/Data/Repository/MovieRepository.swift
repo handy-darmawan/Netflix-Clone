@@ -8,63 +8,51 @@
 import Foundation
 
 class MovieRepository: MovieRepositoryProtocol {
+    static let shared = MovieRepository()
     private let networkDataSource = MovieNetworkDataSource()
     private let localDataSource = LocalDataSource()
     
-    private var result: Result<[Movie],Error>?
-    
-    func getTrendingMovies() async -> Result<[Movie], Error> {
-        await networkDataSource.getTrendingMovies { self.result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+  
+    func getTrendingMovies() async throws -> [Movie] {
+       return try await networkDataSource.getTrendingMovies()
     }
     
-    func getTrendingTV() async -> Result<[Movie], Error> {
-        await networkDataSource.getTrendingTV { self.result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+    func getTrendingTV() async throws -> [Movie] {
+        return try await networkDataSource.getTrendingTV()
     }
     
-    func getPopular() async -> Result<[Movie], Error> {
-        await networkDataSource.getPopular { self.result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+    func getPopular() async throws -> [Movie] {
+        return try await networkDataSource.getPopular()
     }
     
-    func getTopRated() async -> Result<[Movie], Error> {
-        await networkDataSource.getTopRated { self.result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+    func getTopRated() async throws -> [Movie] {
+        return try await networkDataSource.getTopRated()
     }
     
-    func getUpcomingMovies() async -> Result<[Movie], Error> {
-        await networkDataSource.getUpcomingMovie { self.result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+    func getUpcomingMovies() async throws -> [Movie] {
+        return try await networkDataSource.getUpcomingMovie()
     }
     
-    func getDiscoverMovies() async -> Result<[Movie], Error> {
-        await networkDataSource.getDiscoverMovies { self.result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+    func getDiscoverMovies() async throws -> [Movie] {
+        return try await networkDataSource.getDiscoverMovies()
     }
     
-    func searchByKeyword(_ keyword: String) async -> Result<[Movie], Error> {
-        await networkDataSource.searchByKeyword(keyword: keyword) { self.result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+    func searchByKeyword(_ keyword: String) async throws -> [Movie] {
+        return try await networkDataSource.searchByKeyword(keyword: keyword)
     }
 }
 
 //Core Data
 extension MovieRepository {
-    func fetchMovies() async -> Result<[Movie], Error> {
-        await localDataSource.fetchMovies { self.result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+    func fetchMovies() async throws -> [Movie] {
+        return try await localDataSource.fetchMovies()
     }
     
-    func saveMovie(with movie: Movie) async -> Result<Void, Error> {
-        var result: Result<Void, Error>?
-        await localDataSource.saveMovie(with: movie) { result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+    func saveMovie(with movie: Movie) async throws {
+        return try await localDataSource.saveMovie(with: movie)
     }
     
-    func deleteMovie(with movie: Movie) async -> Result<Void, Error> {
-        var result: Result<Void, Error>?
-        await localDataSource.deleteMovie(with: movie) { result = $0 }
-        return result ?? .failure(APIError.failedToGetData)
+    func deleteMovie(with movie: Movie) async throws {
+        return try await localDataSource.deleteMovie(with: movie)
     }
 }

@@ -8,11 +8,11 @@
 import Foundation
 
 protocol MovieNetworkDataSourceProtocol {
-    func getTrendingMovies(completion: @escaping (Result<[Movie], Error>) -> Void) async
-    func getTrendingTV(completion: @escaping (Result<[Movie], Error>) -> Void) async
-    func getPopular(completion: @escaping (Result<[Movie], Error>) -> Void) async
-    func getTopRated(completion: @escaping (Result<[Movie], Error>) -> Void) async
-    func getUpcomingMovie(completion: @escaping (Result<[Movie], Error>) -> Void) async
-    func getDiscoverMovies(completion: @escaping (Result<[Movie], Error>) -> Void) async
-    func searchByKeyword(keyword: String, completion: @escaping (Result<[Movie], Error>) -> Void) async
+    func getTrendingMovies() async throws -> [Movie]
+    func getTrendingTV() async throws -> [Movie]
+    func getPopular() async throws -> [Movie]
+    func getTopRated() async throws -> [Movie]
+    func getUpcomingMovie() async throws -> [Movie]
+    func getDiscoverMovies() async throws -> [Movie]
+    func searchByKeyword(keyword: String) async throws -> [Movie]
 }

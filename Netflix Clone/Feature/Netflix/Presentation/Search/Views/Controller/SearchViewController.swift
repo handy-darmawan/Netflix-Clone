@@ -34,17 +34,17 @@ class SearchViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
-        NetworkManager.shared.getDiscoverMovies { [weak self] result in
-            switch result {
-            case .success(let movies):
-                self?.data = movies
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        NetworkManager.shared.getDiscoverMovies { [weak self] result in
+//            switch result {
+//            case .success(let movies):
+//                self?.data = movies
+//                DispatchQueue.main.async {
+//                    self?.tableView.reloadData()
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
         
         let searchController = UISearchController(searchResultsController: SearchResultsViewController())
         searchController.searchBar.placeholder = "Search for a movie"
@@ -80,20 +80,20 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
             let movieOverview = movie.overview
         else { return }
         
-        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
-            guard let self = self else { return }
-            switch results {
-            case .success(let movieDetail):
-                DispatchQueue.main.async {
-                    let vc = TitlePreviewViewController()
-                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-                    vc.configure(with: vm, movie: movie)
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
+//            guard let self = self else { return }
+//            switch results {
+//            case .success(let movieDetail):
+//                DispatchQueue.main.async {
+//                    let vc = TitlePreviewViewController()
+//                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
+//                    vc.configure(with: vm, movie: movie)
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
     }
 }
 
@@ -106,28 +106,28 @@ extension SearchViewController: UISearchResultsUpdating {
               let resultController = searchController.searchResultsController as? SearchResultsViewController
         else { return }
         
-        resultController.delegate = self
+//        resultController.delegate = self
         
-        NetworkManager.shared.search(with: query) { result in
-            switch result {
-            case .success(let movies):
-                resultController.update(with: movies)
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
+//        NetworkManager.shared.search(with: query) { result in
+//            switch result {
+//            case .success(let movies):
+//                resultController.update(with: movies)
+//            case .failure(let error):
+//                print(error.localizedDescription)
+//            }
+//        }
     }
 }
 
-extension SearchViewController: SearchResultsViewControllerDelegate {
-    func didTap(vm: TitlePreviewViewModel, movie: Movie) {
-        //push to the next view controller
-        DispatchQueue.main.async { [ weak self] in
-            guard let self = self else { return }
-            let vc = TitlePreviewViewController()
-            vc.configure(with: vm, movie: movie)
-            navigationController?.pushViewController(vc, animated: true)
-        }
-    }
-}
+//extension SearchViewController: SearchResultsViewControllerDelegate {
+//    func didTap(vm: TitlePreviewViewModel, movie: Movie) {
+//        //push to the next view controller
+//        DispatchQueue.main.async { [ weak self] in
+//            guard let self = self else { return }
+//            let vc = TitlePreviewViewController()
+//            vc.configure(with: vm, movie: movie)
+//            navigationController?.pushViewController(vc, animated: true)
+//        }
+//    }
+//}
 

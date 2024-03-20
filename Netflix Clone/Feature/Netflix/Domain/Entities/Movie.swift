@@ -9,6 +9,7 @@ import Foundation
 import CoreData
 
 struct Movie: Hashable {
+    var uuid = UUID().uuidString
     let id: Int
     let mediaType: String?
     let originalName: String?
@@ -19,3 +20,4 @@ struct Movie: Hashable {
     let releaseDate: String?
     let voteAverage: Double?
 }
+

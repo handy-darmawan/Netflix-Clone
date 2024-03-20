@@ -8,5 +8,5 @@
 import Foundation
 
 protocol MovieActionUseCaseProtocol {
-    func execute() async -> Result<[Movie], Error>
+    func execute() async throws -> [Movie]
 }

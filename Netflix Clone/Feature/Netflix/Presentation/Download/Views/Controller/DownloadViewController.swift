@@ -40,17 +40,17 @@ class DownloadViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        CoreDataDataSource.shared.fetch { results in
-            switch results {
-            case .success(let movies):
-                self.data = movies
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        CoreDataDataSource.shared.fetch { results in
+//            switch results {
+//            case .success(let movies):
+//                self.data = movies
+//                DispatchQueue.main.async {
+//                    self.tableView.reloadData()
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
     }
 }
 
@@ -79,37 +79,38 @@ extension DownloadViewController: UITableViewDelegate, UITableViewDataSource {
             let movieOverview = movie.overview
         else { return }
         
-        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
-            guard let self = self else { return }
-            switch results {
-            case .success(let movieDetail):
-                DispatchQueue.main.async {
-                    let vc = TitlePreviewViewController()
-                    
-                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-                    vc.configure(with: vm, movie: movie)
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
+//            guard let self = self else { return }
+//            switch results {
+//            case .success(let movieDetail):
+//                DispatchQueue.main.async {
+//                    let vc = TitlePreviewViewController()
+//                    
+//                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
+//                    vc.configure(with: vm, movie: movie)
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
     }
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         switch editingStyle {
         case .delete:
-            let movie = data[indexPath.row]
-            CoreDataDataSource.shared.delete(movie: movie) { [weak self] results in
-                guard let self = self else { return }
-                switch results {
-                case .success(_):
-                    self.data.remove(at: indexPath.row)
-                    tableView.deleteRows(at: [indexPath], with: .fade)
-                case .failure(let error):
-                    print(error)
-                }
-            }
+//            let movie = data[indexPath.row]
+//            CoreDataDataSource.shared.delete(movie: movie) { [weak self] results in
+//                guard let self = self else { return }
+//                switch results {
+//                case .success(_):
+//                    self.data.remove(at: indexPath.row)
+//                    tableView.deleteRows(at: [indexPath], with: .fade)
+//                case .failure(let error):
+//                    print(error)
+//                }
+//            }
+            print("Delete")
         default:
             break
         }

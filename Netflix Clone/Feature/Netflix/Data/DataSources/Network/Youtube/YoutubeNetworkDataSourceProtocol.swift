@@ -8,5 +8,5 @@
 import Foundation
 
 protocol YoutubeNetworkDataSourceProtocol {
-    func getMovie(with query: String, completion: @escaping (Result<Youtube, Error>) -> Void) async
+    func getMovie(with query: String) async throws -> Youtube
 }

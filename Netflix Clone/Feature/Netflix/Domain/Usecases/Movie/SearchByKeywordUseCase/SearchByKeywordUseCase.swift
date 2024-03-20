@@ -8,7 +8,7 @@
 import Foundation
 
 class SearchByKeywordUseCase: MovieUseCase, SearchByKeywordUseCaseProtocol {
-    func execute(with keyword: String) async -> Result<[Movie], Error> {
-        return await movieRepository.searchByKeyword(keyword)
+    func execute(with keyword: String) async throws -> [Movie] {
+        try await movieRepository.searchByKeyword(keyword)
     }
 }

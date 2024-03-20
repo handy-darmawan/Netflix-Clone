@@ -8,7 +8,7 @@
 import Foundation
 
 class FetchUseCase: MovieUseCase, MovieActionUseCaseProtocol {
-    func execute() async -> Result<[Movie], Error> {
-        return await movieRepository.fetchMovies()
+    func execute() async throws -> [Movie] {
+        try await movieRepository.fetchMovies()
     }
 }

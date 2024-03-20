@@ -11,6 +11,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    private func registerViewController() -> UITabBarController {
+        let homeVC = UINavigationController(rootViewController: HomeViewController())
+        let upcomingVC = UINavigationController(rootViewController: UpcomingViewController())
+        let searchVC = UINavigationController(rootViewController: SearchViewController())
+        let downloadVC = UINavigationController(rootViewController: DownloadViewController())
+        
+        homeVC.tabBarItem.image = UIImage(systemName: "house")
+        upcomingVC.tabBarItem.image = UIImage(systemName: "play.circle")
+        searchVC.tabBarItem.image = UIImage(systemName: "magnifyingglass")
+        downloadVC.tabBarItem.image = UIImage(systemName: "arrow.down.to.line")
+        
+        homeVC.title = "Home"
+        upcomingVC.title = "Coming Soon"
+        searchVC.title = "Top Search"
+        downloadVC.title = "Downloads"
+        
+        let tabBarVC = UITabBarController()
+        tabBarVC.tabBar.tintColor = .label
+        tabBarVC.setViewControllers([homeVC, upcomingVC, searchVC, downloadVC], animated: true)
+        
+        return tabBarVC
+    }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -19,7 +41,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
     
         let window = UIWindow(windowScene: scene)
-        window.rootViewController = MainTabBarViewController()
+        
+        window.rootViewController = registerViewController()
         window.makeKeyAndVisible()
         self.window = window
     }

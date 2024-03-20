@@ -8,5 +8,5 @@
 import Foundation
 
 protocol MoviePersistenceUseCaseProtocol {
-    func execute(with movie: Movie) async -> Result<Void, Error>
+    func execute(with movie: Movie) async throws
 }
