@@ -12,14 +12,14 @@ import WebKit
 class TitlePreviewViewController: UIViewController {
     private var movie: Movie?
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 22, weight: .bold)
         return label
     }()
     
-    private let webView: WKWebView = {
+    private lazy var webView: WKWebView = {
         let webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.configuration.preferences.isElementFullscreenEnabled = true
@@ -27,7 +27,7 @@ class TitlePreviewViewController: UIViewController {
         return webView
     }()
     
-    private let overviewLabel: UILabel = {
+    private lazy var overviewLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 18, weight: .regular)
@@ -35,7 +35,7 @@ class TitlePreviewViewController: UIViewController {
         return label
     }()
     
-    private let downloadButton: UIButton = {
+    private lazy var downloadButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(downloadButtonTapped), for: .touchUpInside)
@@ -91,12 +91,13 @@ class TitlePreviewViewController: UIViewController {
         ])
     }
     
-//    func configure(with viewModel: TitlePreviewViewModel, movie: Movie) {
-//        self.movie = movie
-//        titleLabel.text = viewModel.title
-//        overviewLabel.text = viewModel.titleOverview
-//        guard let url = URL(string: "https://www.youtube.com/watch?v=" + viewModel.youtubeView.id.videoId) else { return }
-//        webView.load(URLRequest(url: url))
-//    }
+    func configure(with movie: Movie, youtubeID: String) {
+        self.movie = movie
+
+        titleLabel.text = movie.originalName ?? movie.originalTitle
+        overviewLabel.text = movie.overview
+        guard let url = URL(string: "https://www.youtube.com/watch?v=" + youtubeID) else { return }
+        webView.load(URLRequest(url: url))
+    }
     
 }

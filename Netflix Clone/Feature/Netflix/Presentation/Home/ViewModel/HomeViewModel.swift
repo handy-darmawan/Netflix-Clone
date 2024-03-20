@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Combine
 
 class HomeViewModel {
     private let getTrendingMoviesUseCase: GetTrendingMoviesUseCase
@@ -14,10 +13,16 @@ class HomeViewModel {
     private let getPopularMoviesUseCase: GetPopularMoviesUseCase
     private let getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase
     private let getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
+    private let getMovieLinks: GetMovieUseCase
     private let movieRepository = MovieRepository.shared
+    private let youtubeRepository = YoutubeRepository.shared
     
-    var movies = CurrentValueSubject<[Movie], Never>([])
-    //must be use 5 var? to trigger the homeview
+    var trendingMovies: [Movie] = []
+    var trendingTV: [Movie] = []
+    var popularMovies: [Movie] = []
+    var topRatedMovies: [Movie] = []
+    var upcomingMovies: [Movie] = []
+    var headerMovies: Movie?
     
     init() {
         getTrendingMoviesUseCase = GetTrendingMoviesUseCase(movieRepository: movieRepository)
@@ -25,12 +30,43 @@ class HomeViewModel {
         getPopularMoviesUseCase = GetPopularMoviesUseCase(movieRepository: movieRepository)
         getTopRatedMoviesUseCase = GetTopRatedMoviesUseCase(movieRepository: movieRepository)
         getUpcomingMoviesUseCase = GetUpcomingMoviesUseCase(movieRepository: movieRepository)
+        getMovieLinks = GetMovieUseCase(youtubeRepository: youtubeRepository)
+    }
+}
+
+
+//MARK: Actions
+extension HomeViewModel {
+    func onLoad() async {
+        await getTrendingMovies()
+        await getTrendingTV()
+        await getPopularMovies()
+        await getTopRatedMovies()
+        await getUpcomingMovies()
+        
+        headerMovies = trendingMovies.randomElement()
+        headerMovies?.uuid += "_header"
     }
     
+    func getMovieDetail(for movie: Movie) async -> Youtube? {
+        do {
+            guard let title = movie.originalTitle ?? movie.originalName else { return nil }
+            let result = try await getMovieLinks.execute(with: "\(title) Trailer")
+            return result
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
+    }
+}
+
+
+//MARK: Private Actions
+private extension HomeViewModel {
     func getTrendingMovies() async {
         do {
-            let result = try await getTrendingMoviesUseCase.execute()
-            movies.send(result)
+            let results = try await getTrendingMoviesUseCase.execute()
+            trendingMovies = results
         } catch {
             print(error.localizedDescription)
         }
@@ -39,8 +75,8 @@ class HomeViewModel {
     
     func getTrendingTV() async {
         do {
-            let result = try await getTrendingTVUseCase.execute()
-            movies.send(result)
+            let results = try await getTrendingTVUseCase.execute()
+            trendingTV = results
         } catch {
             print(error.localizedDescription)
         }
@@ -48,8 +84,8 @@ class HomeViewModel {
     
     func getPopularMovies() async {
         do {
-            let result = try await getPopularMoviesUseCase.execute()
-            movies.send(result)
+            let results = try await getPopularMoviesUseCase.execute()
+            popularMovies = results
         } catch {
             print(error.localizedDescription)
         }
@@ -57,8 +93,8 @@ class HomeViewModel {
     
     func getTopRatedMovies() async {
         do {
-            let result = try await getTopRatedMoviesUseCase.execute()
-            movies.send(result)
+            let results = try await getTopRatedMoviesUseCase.execute()
+            topRatedMovies = results
         } catch {
             print(error.localizedDescription)
         }
@@ -66,14 +102,13 @@ class HomeViewModel {
     
     func getUpcomingMovies() async {
         do {
-            let result = try await getUpcomingMoviesUseCase.execute()
-            movies.send(result)
+            let results = try await getUpcomingMoviesUseCase.execute()
+            upcomingMovies = results
         } catch {
             print(error.localizedDescription)
         }
     }
 }
-
 
 //MARK: - Enum
 extension HomeViewModel {
@@ -95,17 +130,6 @@ extension HomeViewModel {
             default: return ""
             }
         }
-        
-    //    var value: Int {
-    //        switch self {
-    //        case .trendingMovies: return 0
-    //        case .popular: return 1
-    //        case .trendingTV: return 2
-    //        case .upcomingMovies: return 3
-    //        case .topRated: return 4
-    //        default: return 0
-    //        }
-    //    }
         
         var itemCount: Int {
             switch self {

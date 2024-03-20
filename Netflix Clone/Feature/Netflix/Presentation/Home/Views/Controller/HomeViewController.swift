@@ -10,10 +10,7 @@ import UIKit
 /**
  Update:
  2. HeroHeaderView -> Use UIStackView to make autolayout in button
- 3. NetworkManager -> Too much boiler plate code to fetch and parsing API
- -> Fix the structure of API Manager
  */
-//230 lines
 
 class HomeViewController: UIViewController {
     //MARK: - DataSource
@@ -33,51 +30,43 @@ class HomeViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        updateSnapshots()
+        Task {
+            await homeVM.onLoad()
+            self.updateSnapshots()
+        }
     }
 }
 
 
 //MARK: Actions
 extension HomeViewController {
-    //    private func playButtonDidTapped(_ vm: TitlePreviewViewModel) {
-    //        guard let movie = randomMovie else { return }
-    //        DispatchQueue.main.async {
-    //            let vc = TitlePreviewViewController()
-    //            vc.configure(with: vm, movie: movie)
-    //            self.navigationController?.pushViewController(vc, animated: true)
-    //        }
-    //    }
-
+    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
+        Task {
+            let detailView = TitlePreviewViewController()
+            detailView.configure(with: movie, youtubeID: youtubeID)
+            DispatchQueue.main.async {
+                self.resetNavigationBar()
+                self.navigationController?.pushViewController(detailView, animated: true)
+            }
+        }
+    }
+    
     private func updateSnapshots() {
         var snapshot = Snapshot()
         snapshot.appendSections(HomeViewModel.Sections.allCases)
         
-        Task { [ weak self ] in
-            guard let self = self else { return }
-            
-            await homeVM.getTrendingMovies()
-            guard var randomMovie = homeVM.movies.value.randomElement() else { return }
-            randomMovie.uuid = randomMovie.uuid + "_header"
-            snapshot.appendItems([randomMovie], toSection: .header)
-            snapshot.appendItems(homeVM.movies.value, toSection: .trendingMovies)
-            
-            await homeVM.getPopularMovies()
-            snapshot.appendItems(homeVM.movies.value, toSection: .popular)
-            
-            await homeVM.getTrendingTV()
-            snapshot.appendItems(homeVM.movies.value, toSection: .trendingTV)
-            
-            await homeVM.getUpcomingMovies()
-            snapshot.appendItems(homeVM.movies.value, toSection: .upcomingMovies)
-            
-            await homeVM.getTopRatedMovies()
-            snapshot.appendItems(homeVM.movies.value, toSection: .topRated)
-            
-            DispatchQueue.main.async {
-                self.dataSource?.apply(snapshot)
-            }
-        }
+        guard let headerMovies = homeVM.headerMovies else { return }
+        snapshot.appendItems([headerMovies], toSection: .header)
+        snapshot.appendItems(homeVM.trendingMovies, toSection: .trendingMovies)
+        snapshot.appendItems(homeVM.popularMovies, toSection: .popular)
+        snapshot.appendItems(homeVM.trendingTV, toSection: .trendingTV)
+        snapshot.appendItems(homeVM.upcomingMovies, toSection: .upcomingMovies)
+        snapshot.appendItems(homeVM.topRatedMovies, toSection: .topRated)
+        dataSource?.apply(snapshot)
+    }
+    
+    private func resetNavigationBar() {
+        navigationController?.navigationBar.transform = .init(translationX: 0, y: 0)
     }
 }
 
@@ -116,7 +105,7 @@ private extension HomeViewController {
             return header
         }
     }
-
+    
     func setupCollectionView() {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout())
         guard let collectionView = collectionView else { return }
@@ -124,8 +113,8 @@ private extension HomeViewController {
         collectionView.register(MovieCell.self, forCellWithReuseIdentifier: MovieCell.identifier)
         collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderView.identifier)
         collectionView.delegate = self
-        
         view.addSubview(collectionView)
+        
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -175,8 +164,24 @@ private extension HomeViewController {
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath)
-        //on tap then push to detail view
+        var movie: Movie?
+        let section = HomeViewModel.Sections(rawValue: indexPath.section)
+        switch section {
+            case .header, .trendingMovies: movie = homeVM.headerMovies
+            case .popular: movie = homeVM.popularMovies[indexPath.row]
+            case .trendingTV: movie = homeVM.trendingTV[indexPath.row]
+            case .upcomingMovies: movie = homeVM.upcomingMovies[indexPath.row]
+            case .topRated: movie = homeVM.topRatedMovies[indexPath.row]
+            default: return
+        }
+        
+        guard let movie = movie else { return }
+        
+        Task {
+            let movieYoutube = await homeVM.getMovieDetail(for: movie)
+            guard let movieYoutube = movieYoutube else { return }
+            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -184,4 +189,5 @@ extension HomeViewController: UICollectionViewDelegate {
         let offset = scrollView.contentOffset.y + defaultOffset
         navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
     }
+    
 }
