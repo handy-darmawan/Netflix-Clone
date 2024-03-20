@@ -28,6 +28,8 @@
 		805AB2532B8CC8BD00ADB8BD /* CollectionViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805AB2522B8CC8BD00ADB8BD /* CollectionViewTableViewCell.swift */; };
 		805B75BB2B90C09B0046FDC8 /* TitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805B75BA2B90C09B0046FDC8 /* TitleTableViewCell.swift */; };
 		805B75BF2B90E5370046FDC8 /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805B75BE2B90E5370046FDC8 /* SearchResultsViewController.swift */; };
+		806BF1CA2BAACCBD00771C09 /* UpcomingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BF1C92BAACCBD00771C09 /* UpcomingViewModel.swift */; };
+		806BF1CD2BAAD47A00771C09 /* DetailViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BF1CC2BAAD47A00771C09 /* DetailViewProtocol.swift */; };
 		8075A1812BA88BEB00B25DFD /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8075A1802BA88BEB00B25DFD /* ErrorType.swift */; };
 		80A165D92BA1EDE300AAD8B4 /* MovieNetworkDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A165D82BA1EDE300AAD8B4 /* MovieNetworkDataSource.swift */; };
 		80A165DB2BA1EDF600AAD8B4 /* MovieNetworkDataSourceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A165DA2BA1EDF600AAD8B4 /* MovieNetworkDataSourceProtocol.swift */; };
@@ -105,6 +107,8 @@
 		805AB2522B8CC8BD00ADB8BD /* CollectionViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewTableViewCell.swift; sourceTree = "<group>"; };
 		805B75BA2B90C09B0046FDC8 /* TitleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleTableViewCell.swift; sourceTree = "<group>"; };
 		805B75BE2B90E5370046FDC8 /* SearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
+		806BF1C92BAACCBD00771C09 /* UpcomingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingViewModel.swift; sourceTree = "<group>"; };
+		806BF1CC2BAAD47A00771C09 /* DetailViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewProtocol.swift; sourceTree = "<group>"; };
 		8075A1802BA88BEB00B25DFD /* ErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorType.swift; sourceTree = "<group>"; };
 		80A165D82BA1EDE300AAD8B4 /* MovieNetworkDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieNetworkDataSource.swift; sourceTree = "<group>"; };
 		80A165DA2BA1EDF600AAD8B4 /* MovieNetworkDataSourceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieNetworkDataSourceProtocol.swift; sourceTree = "<group>"; };
@@ -194,6 +198,7 @@
 		801ED6FF2BA16C8E002C931A /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				806BF1CB2BAAD46B00771C09 /* Protocol */,
 				8075A17F2BA88BDD00B25DFD /* Enum */,
 				801ED7012BA16CB7002C931A /* Presentations */,
 				801ED7022BA16CCC002C931A /* Utilities */,
@@ -280,6 +285,14 @@
 				80EF1E972BA1B5F900A0601D /* Config.plist */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		806BF1CB2BAAD46B00771C09 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				806BF1CC2BAAD47A00771C09 /* DetailViewProtocol.swift */,
+			);
+			path = Protocol;
 			sourceTree = "<group>";
 		};
 		8075A17F2BA88BDD00B25DFD /* Enum */ = {
@@ -615,6 +628,7 @@
 		80EF1E7E2BA1AC4900A0601D /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				806BF1C92BAACCBD00771C09 /* UpcomingViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -811,6 +825,8 @@
 				80E8E9672B9B0B820094AEFB /* CoreDataManager.swift in Sources */,
 				80F146422B9B0777006FF2E1 /* NetflixDatabase.xcdatamodeld in Sources */,
 				80C1C6E22BA4A56E00139A4D /* GetUpcomingMoviesUseCase.swift in Sources */,
+				806BF1CD2BAAD47A00771C09 /* DetailViewProtocol.swift in Sources */,
+				806BF1CA2BAACCBD00771C09 /* UpcomingViewModel.swift in Sources */,
 				801A71642BA7018000086382 /* HomeViewModel.swift in Sources */,
 				80E8E96B2B9B0EA00094AEFB /* LocalDataSource.swift in Sources */,
 				80C1C6D22BA4A53B00139A4D /* SaveUseCase.swift in Sources */,
