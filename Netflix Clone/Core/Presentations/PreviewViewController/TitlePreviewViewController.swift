@@ -90,7 +90,10 @@ class TitlePreviewViewController: UIViewController {
             //            downloadButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -view.frame.height * 0.15)
         ])
     }
-    
+}
+
+//MARK: - Actions
+extension TitlePreviewViewController {
     func configure(with movie: Movie, youtubeID: String) {
         self.movie = movie
 

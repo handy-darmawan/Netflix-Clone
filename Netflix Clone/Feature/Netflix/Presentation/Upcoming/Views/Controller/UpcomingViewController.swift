@@ -9,25 +9,72 @@ import UIKit
 
 class UpcomingViewController: UIViewController {
     
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.identifier)
-        return tableView
-    }()
+    //MARK: - Data Source
+    private typealias DataSource = UITableViewDiffableDataSource<UpcomingViewModel.Sections, Movie>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<UpcomingViewModel.Sections, Movie>
     
-    var data: [Movie] = []
+    //MARK: - Attributes
+    private var tableView: UITableView?
+    private let upcomingVM = UpcomingViewModel()
     
+    private var dataSource: DataSource?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        
+        setup()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        Task {
+            await upcomingVM.onLoad()
+            self.updateSnapshot()
+        }
+    }
+}
+
+
+//MARK: - Actions
+extension UpcomingViewController {
+    private func updateSnapshot() {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.upcoming])
+        snapshot.appendItems(upcomingVM.movies, toSection: .upcoming)
+        dataSource?.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
+        Task {
+            let detailView = TitlePreviewViewController()
+            detailView.configure(with: movie, youtubeID: youtubeID)
+            DispatchQueue.main.async {
+                self.navigationController?.pushViewController(detailView, animated: true)
+            }
+        }
+    }
+}
+
+
+//MARK: - Setups
+private extension UpcomingViewController {
+    func setup() {
+        setupNavigationBar()
+        setupTableView()
+        configureDataSource()
+    }
+    
+    func setupNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Upcoming"
-        
-        view.addSubview(tableView)
+    }
+    
+    func setupTableView() {
+        tableView = UITableView()
+        guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
-        tableView.dataSource = self
+        tableView.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.identifier)
+        view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -35,60 +82,34 @@ class UpcomingViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
-//        NetworkManager.shared.getUpcomingMovie { [weak self] result in
-//            switch result {
-//            case .success(let movies):
-//                self?.data = movies
-//                DispatchQueue.main.async {
-//                    self?.tableView.reloadData()
-//                }
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
+    }
+    
+    func configureDataSource() {
+        guard let tableView = tableView else { return }
+        dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: TitleTableViewCell.identifier, for: indexPath) as? TitleTableViewCell else { return UITableViewCell() }
+            cell.configure(with: movie)
+            return cell
+        }
     }
 }
 
-extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TitleTableViewCell.identifier, for: indexPath) as? TitleTableViewCell else { return UITableViewCell() }
-        cell.configure(with: data[indexPath.row])
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        140
-    }
-    
+
+//MARK: - Delegate
+extension UpcomingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let movie = data[indexPath.row]
-        guard 
-            let movieTitle = movie.originalTitle ?? movie.originalName,
-            let movieOverview = movie.overview
-        else { return }
+        let movie = upcomingVM.movies[indexPath.row]
         
-//        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
-//            guard let self = self else { return }
-//            switch results {
-//            case .success(let movieDetail):
-//                DispatchQueue.main.async {
-//                    let vc = TitlePreviewViewController()
-//                    
-//                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-//                    vc.configure(with: vm, movie: movie)
-//                    self.navigationController?.pushViewController(vc, animated: true)
-//                }
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
-        
+        Task {
+            let movieYoutube = await upcomingVM.getMovieDetail(for: movie)
+            guard let movieYoutube = movieYoutube else { return }
+            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        90
     }
 }
