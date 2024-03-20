@@ -8,7 +8,7 @@
 import UIKit
 import SDWebImage
 
-class TitleTableViewCell: UITableViewCell {
+class TableViewCell: UITableViewCell {
     static let identifier = "TitleTableViewCell"
     
     private var upcomingImageView: UIImageView = {

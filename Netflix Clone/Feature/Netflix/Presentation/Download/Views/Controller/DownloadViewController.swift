@@ -9,25 +9,72 @@ import UIKit
 
 class DownloadViewController: UIViewController {
     
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.identifier)
-        return tableView
-    }()
+    //MARK: - Data Source
+    private typealias DataSource = UITableViewDiffableDataSource<DownloadViewModel.Sections, Movie>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<DownloadViewModel.Sections, Movie>
     
-    var data: [Movie] = []
+    //MARK: - Attributes
+    private var tableView: UITableView?
+    private let downloadVM = DownloadViewModel()
+    
+    private var dataSource: DataSource?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        
+        setup()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        Task {
+            await downloadVM.onLoad()
+            self.updateSnapshot()
+        }
+    }
+}
+
+
+//MARK: - Actions
+extension DownloadViewController {
+    private func updateSnapshot() {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.download])
+        snapshot.appendItems(downloadVM.movies, toSection: .download)
+        dataSource?.apply(snapshot)
+    }
+    
+    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
+        Task {
+            let detailView = TitlePreviewViewController()
+            detailView.configure(with: movie, youtubeID: youtubeID)
+            DispatchQueue.main.async {
+                self.navigationController?.pushViewController(detailView, animated: true)
+            }
+        }
+    }
+}
+
+
+//MARK: - Setups
+private extension DownloadViewController {
+    func setup() {
+        setupNavigationBar()
+        setupTableView()
+        configureDataSource()
+    }
+    
+    func setupNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Download"
-        
-        view.addSubview(tableView)
+    }
+    
+    func setupTableView() {
+        tableView = UITableView()
+        guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
-        tableView.dataSource = self
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
+        view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -35,84 +82,48 @@ class DownloadViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
-        
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-//        CoreDataDataSource.shared.fetch { results in
-//            switch results {
-//            case .success(let movies):
-//                self.data = movies
-//                DispatchQueue.main.async {
-//                    self.tableView.reloadData()
-//                }
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
+    func configureDataSource() {
+        guard let tableView = tableView else { return }
+        dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as? TableViewCell else { return UITableViewCell() }
+            cell.configure(with: movie)
+            return cell
+        }
     }
 }
 
-extension DownloadViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TitleTableViewCell.identifier, for: indexPath) as? TitleTableViewCell else { return UITableViewCell() }
-        let movie = data[indexPath.row]
-        cell.configure(with: movie)
-        return cell
+
+//MARK: - Delegate
+extension DownloadViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let movie = downloadVM.movies[indexPath.row]
+        
+        Task {
+            let movieYoutube = await downloadVM.getMovieDetail(for: movie)
+            guard let movieYoutube = movieYoutube else { return }
+            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         140
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        let movie = data[indexPath.row]
-        guard
-            let movieTitle = movie.originalTitle ?? movie.originalName,
-            let movieOverview = movie.overview
-        else { return }
-        
-//        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
-//            guard let self = self else { return }
-//            switch results {
-//            case .success(let movieDetail):
-//                DispatchQueue.main.async {
-//                    let vc = TitlePreviewViewController()
-//                    
-//                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-//                    vc.configure(with: vm, movie: movie)
-//                    self.navigationController?.pushViewController(vc, animated: true)
-//                }
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
-    }
-
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        switch editingStyle {
-        case .delete:
-//            let movie = data[indexPath.row]
-//            CoreDataDataSource.shared.delete(movie: movie) { [weak self] results in
-//                guard let self = self else { return }
-//                switch results {
-//                case .success(_):
-//                    self.data.remove(at: indexPath.row)
-//                    tableView.deleteRows(at: [indexPath], with: .fade)
-//                case .failure(let error):
-//                    print(error)
-//                }
-//            }
-            print("Delete")
-        default:
-            break
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        print("swipe")
+        let delete = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (_, _, _) in
+            guard let self = self else { return }
+            let movie = self.downloadVM.movies[indexPath.row]
+            Task {
+                await self.downloadVM.deleteMovie(with: movie)
+                self.downloadVM.movies.remove(at: indexPath.row)
+                self.updateSnapshot()
+            }
         }
+        
+        return UISwipeActionsConfiguration(actions: [delete])
     }
 }

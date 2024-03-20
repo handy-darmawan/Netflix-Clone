@@ -83,7 +83,7 @@ private extension SearchViewController {
         guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
-        tableView.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.identifier)
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
@@ -97,7 +97,7 @@ private extension SearchViewController {
     func configureDataSource() {
         guard let tableView = tableView else { return }
         dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: TitleTableViewCell.identifier, for: indexPath) as? TitleTableViewCell else { return UITableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as? TableViewCell else { return UITableViewCell() }
             cell.configure(with: movie)
             return cell
         }
@@ -120,7 +120,7 @@ extension SearchViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        90
+        140
     }
 }
 

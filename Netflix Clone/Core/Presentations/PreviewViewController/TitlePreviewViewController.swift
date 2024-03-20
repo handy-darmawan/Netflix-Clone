@@ -11,6 +11,7 @@ import WebKit
 
 class TitlePreviewViewController: UIViewController {
     private var movie: Movie?
+    let downloadVM = DownloadViewModel()
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -58,14 +59,11 @@ class TitlePreviewViewController: UIViewController {
     @objc
     private func downloadButtonTapped(sender: UIButton) {
         guard let movie = movie else { return }
-//        CoreDataDataSource.shared.saveMovie(with movie: movie) { results in
-//            switch results {
-//            case .success:
-//                print("Movie saved")
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
+
+        Task {
+            await downloadVM.saveMovie(with: movie)
+            print("movie saved")
+        }
     }
     
     private func configureConstraints() {
@@ -86,8 +84,7 @@ class TitlePreviewViewController: UIViewController {
             downloadButton.topAnchor.constraint(equalTo: overviewLabel.bottomAnchor, constant: 20),
             downloadButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             downloadButton.widthAnchor.constraint(equalToConstant: 140),
-            downloadButton.heightAnchor.constraint(equalToConstant: 50),
-            //            downloadButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -view.frame.height * 0.15)
+            downloadButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 }
