@@ -8,24 +8,83 @@
 import UIKit
 
 class SearchViewController: UIViewController {
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.identifier)
-        return tableView
-    }()
-    var data: [Movie] = []
     
+    //MARK: - Data Source
+    private typealias DataSource = UITableViewDiffableDataSource<UpcomingViewModel.Sections, Movie>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<UpcomingViewModel.Sections, Movie>
+    
+    //MARK: - Attributes
+    private var tableView: UITableView?
+    private let searchVM = SearchViewModel()
+    
+    private var dataSource: DataSource?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        
+        setup()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        Task {
+            await searchVM.onLoad()
+            self.updateSnapshot()
+        }
+    }
+}
+
+
+//MARK: - Actions
+extension SearchViewController {
+    private func updateSnapshot() {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.upcoming])
+        snapshot.appendItems(searchVM.movies, toSection: .upcoming)
+        dataSource?.apply(snapshot)
+    }
+    
+    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
+        Task {
+            let detailView = TitlePreviewViewController()
+            detailView.configure(with: movie, youtubeID: youtubeID)
+            DispatchQueue.main.async {
+                self.navigationController?.pushViewController(detailView, animated: true)
+            }
+        }
+    }
+}
+
+
+//MARK: - Setups
+private extension SearchViewController {
+    func setup() {
+        setupNavigationBar()
+        setupSearchBar()
+        setupTableView()
+        configureDataSource()
+    }
+    
+    func setupNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Search"
-        view.addSubview(tableView)
+    }
+    
+    func setupSearchBar() {
+        let searchController = UISearchController(searchResultsController: SearchResultsViewController())
         
+        searchController.searchBar.placeholder = "Search for a movie"
+        searchController.searchBar.searchBarStyle = .minimal
+        searchController.searchResultsUpdater = self
+        navigationItem.searchController = searchController
+    }
+    
+    func setupTableView() {
+        tableView = UITableView()
+        guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
-        tableView.dataSource = self
+        tableView.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.identifier)
+        view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -33,71 +92,40 @@ class SearchViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
-//        NetworkManager.shared.getDiscoverMovies { [weak self] result in
-//            switch result {
-//            case .success(let movies):
-//                self?.data = movies
-//                DispatchQueue.main.async {
-//                    self?.tableView.reloadData()
-//                }
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
-        
-        let searchController = UISearchController(searchResultsController: SearchResultsViewController())
-        searchController.searchBar.placeholder = "Search for a movie"
-        searchController.searchBar.searchBarStyle = .minimal
-        searchController.searchResultsUpdater = self
-        
-        navigationItem.searchController = searchController
-        
+    }
+    
+    func configureDataSource() {
+        guard let tableView = tableView else { return }
+        dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: TitleTableViewCell.identifier, for: indexPath) as? TitleTableViewCell else { return UITableViewCell() }
+            cell.configure(with: movie)
+            return cell
+        }
     }
 }
 
-extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TitleTableViewCell.identifier, for: indexPath) as? TitleTableViewCell else { return UITableViewCell() }
-        cell.configure(with: data[indexPath.row])
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        140
-    }
-    
+
+//MARK: - Table View Delegate
+extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let movie = data[indexPath.row]
-        guard
-            let movieTitle = movie.originalTitle ?? movie.originalName,
-            let movieOverview = movie.overview
-        else { return }
+        let movie = searchVM.movies[indexPath.row]
         
-//        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
-//            guard let self = self else { return }
-//            switch results {
-//            case .success(let movieDetail):
-//                DispatchQueue.main.async {
-//                    let vc = TitlePreviewViewController()
-//                    let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-//                    vc.configure(with: vm, movie: movie)
-//                    self.navigationController?.pushViewController(vc, animated: true)
-//                }
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
+        Task {
+            let movieYoutube = await searchVM.getMovieDetail(for: movie)
+            guard let movieYoutube = movieYoutube else { return }
+            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        90
     }
 }
 
 
+//MARK: - Search Result Delegate
 extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let query = searchController.searchBar.text,
@@ -106,28 +134,18 @@ extension SearchViewController: UISearchResultsUpdating {
               let resultController = searchController.searchResultsController as? SearchResultsViewController
         else { return }
         
-//        resultController.delegate = self
+        resultController.delegate = self
         
-//        NetworkManager.shared.search(with: query) { result in
-//            switch result {
-//            case .success(let movies):
-//                resultController.update(with: movies)
-//            case .failure(let error):
-//                print(error.localizedDescription)
-//            }
-//        }
+        Task {
+            await searchVM.searchMovies(with: query)
+            resultController.update(with: searchVM.movies)
+        }
     }
 }
 
-//extension SearchViewController: SearchResultsViewControllerDelegate {
-//    func didTap(vm: TitlePreviewViewModel, movie: Movie) {
-//        //push to the next view controller
-//        DispatchQueue.main.async { [ weak self] in
-//            guard let self = self else { return }
-//            let vc = TitlePreviewViewController()
-//            vc.configure(with: vm, movie: movie)
-//            navigationController?.pushViewController(vc, animated: true)
-//        }
-//    }
-//}
 
+extension SearchViewController: SearchResultsViewControllerDelegate {
+    func didTap(movie: Movie, youtubeID: String) {
+        navigateToDetailView(with: movie, youtubeID: youtubeID)
+    }
+}
