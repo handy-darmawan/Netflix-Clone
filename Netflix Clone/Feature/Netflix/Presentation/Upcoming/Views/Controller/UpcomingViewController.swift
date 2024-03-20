@@ -40,7 +40,7 @@ extension UpcomingViewController {
         var snapshot = Snapshot()
         snapshot.appendSections([.upcoming])
         snapshot.appendItems(upcomingVM.movies, toSection: .upcoming)
-        dataSource?.apply(snapshot, animatingDifferences: true)
+        dataSource?.apply(snapshot)
     }
     
     private func navigateToDetailView(with movie: Movie, youtubeID: String) {

@@ -7,34 +7,72 @@
 
 import UIKit
 
-//protocol SearchResultsViewControllerDelegate: AnyObject {
-//    func didTap(vm: TitlePreviewViewModel, movie: Movie)
-//}
+protocol SearchResultsViewControllerDelegate: AnyObject {
+    func didTap(movie: Movie, youtubeID: String)
+}
 
 class SearchResultsViewController: UIViewController {
+    //MARK: - Data Source
+    private typealias DataSource = UICollectionViewDiffableDataSource<SearchViewModel.Sections, Movie>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<SearchViewModel.Sections, Movie>
     
-    var data: [Movie] = []
-//    weak var delegate: SearchResultsViewControllerDelegate?
+    //MARK: - Attributes
+    var searchVM: SearchViewModel = SearchViewModel()
+    private var dataSource: DataSource?
+    weak var delegate: SearchResultsViewControllerDelegate?
+    var movies: [Movie] = []
     
-    private var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 3 - 10, height: 200)
-        layout.minimumInteritemSpacing = 0
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(TitleCollectionViewCell.self, forCellWithReuseIdentifier: TitleCollectionViewCell.reuseIdentifier)
-        collectionView.backgroundColor = .systemBackground
-        return collectionView
-    }()
+    private var collectionView: UICollectionView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        
+        setups()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        updateSnapshots()
+    }
+}
+
+
+//MARK: Actions
+extension SearchResultsViewController {
+    func updateSnapshots() {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.search])
+        snapshot.appendItems(movies)
+        dataSource?.apply(snapshot)
+    }
+    
+    func update(with movies: [Movie]) {
+        self.movies = movies
+        updateSnapshots()
+    }
+}
+
+
+//MARK: Setups
+private extension SearchResultsViewController {
+    func setups() {
+        setupCollectionView()
+        setupDataSource()
+    }
+    
+    func setupCollectionView() {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 3 - 10, height: 200)
+        layout.minimumInteritemSpacing = 0
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+
+        guard let collectionView = collectionView else { return }
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(MovieCell.self, forCellWithReuseIdentifier: MovieCell.identifier)
+        collectionView.backgroundColor = .systemBackground
+
         view.addSubview(collectionView)
         collectionView.delegate = self
-        collectionView.dataSource = self
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -44,45 +82,25 @@ class SearchResultsViewController: UIViewController {
         ])
     }
     
-    func update(with results: [Movie]) {
-        data = results
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
+    func setupDataSource() {
+        guard let collectionView = collectionView else { return }
+        dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, movie in
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCell.identifier, for: indexPath) as? MovieCell else { return UICollectionViewCell() }
+            cell.configureFor(type: .normal, movie: movie)
+            return cell
         }
     }
 }
 
-extension SearchResultsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        data.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TitleCollectionViewCell.reuseIdentifier, for: indexPath) as? TitleCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        cell.configure(with: data[indexPath.row].posterPath ?? "")
-        return cell
-    }
-    
+extension SearchResultsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+        let movie = movies[indexPath.row]
         
-        let movie = data[indexPath.row]
-        guard
-            let movieTitle = movie.originalTitle ?? movie.originalName,
-            let movieOverview = movie.overview
-        else { return }
-        
-//        NetworkManager.shared.getMovieDetail(with: movieTitle) { [ weak self ] results in
-//            guard let self = self else { return }
-//            switch results {
-//            case .success(let movieDetail):
-//                let vm = TitlePreviewViewModel(title: movieTitle, youtubeView: movieDetail, titleOverview: movieOverview)
-//                delegate?.didTap(vm: vm, movie: movie)
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
+        Task {
+            let movieYoutube = await searchVM.getMovieDetail(for: movie)
+            guard let movieYoutube = movieYoutube else { return }
+            delegate?.didTap(movie: movie, youtubeID: movieYoutube.videoId)
+        }
     }
 }
