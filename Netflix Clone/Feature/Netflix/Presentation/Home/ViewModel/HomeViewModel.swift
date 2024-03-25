@@ -12,10 +12,9 @@ class HomeViewModel {
     private let getTrendingTVUseCase: GetTrendingTVUseCase
     private let getPopularMoviesUseCase: GetPopularMoviesUseCase
     private let getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase
+    private let saveMovieUseCase: SaveUseCase
     private let getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
-    private let getMovieLinks: GetMovieUseCase
     private let movieRepository = MovieRepository.shared
-    private let youtubeRepository = YoutubeRepository.shared
     
     var trendingMovies: [Movie] = []
     var trendingTV: [Movie] = []
@@ -30,7 +29,7 @@ class HomeViewModel {
         getPopularMoviesUseCase = GetPopularMoviesUseCase(movieRepository: movieRepository)
         getTopRatedMoviesUseCase = GetTopRatedMoviesUseCase(movieRepository: movieRepository)
         getUpcomingMoviesUseCase = GetUpcomingMoviesUseCase(movieRepository: movieRepository)
-        getMovieLinks = GetMovieUseCase(youtubeRepository: youtubeRepository)
+        saveMovieUseCase = SaveUseCase(movieRepository: movieRepository)
     }
 }
 
@@ -48,14 +47,11 @@ extension HomeViewModel {
         headerMovies?.uuid += "_header"
     }
     
-    func getMovieDetail(for movie: Movie) async -> Youtube? {
+    func saveMovie(with movie: Movie) async {
         do {
-            guard let title = movie.originalTitle ?? movie.originalName else { return nil }
-            let result = try await getMovieLinks.execute(with: "\(title) Trailer")
-            return result
+            try await saveMovieUseCase.execute(with: movie)
         } catch {
             print(error.localizedDescription)
-            return nil
         }
     }
 }

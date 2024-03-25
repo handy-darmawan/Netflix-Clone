@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SearchResultsViewControllerDelegate: AnyObject {
-    func didTap(movie: Movie, youtubeID: String)
+    func didTap(movie: Movie)
 }
 
 class SearchResultsViewController: UIViewController {
@@ -17,7 +17,7 @@ class SearchResultsViewController: UIViewController {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<SearchViewModel.Sections, Movie>
     
     //MARK: - Attributes
-    var searchVM: SearchViewModel = SearchViewModel()
+    private var searchVM: SearchViewModel = SearchViewModel()
     private var dataSource: DataSource?
     weak var delegate: SearchResultsViewControllerDelegate?
     var movies: [Movie] = []
@@ -96,11 +96,6 @@ extension SearchResultsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         let movie = movies[indexPath.row]
-        
-        Task {
-            let movieYoutube = await searchVM.getMovieDetail(for: movie)
-            guard let movieYoutube = movieYoutube else { return }
-            delegate?.didTap(movie: movie, youtubeID: movieYoutube.videoId)
-        }
+        delegate?.didTap(movie: movie)
     }
 }

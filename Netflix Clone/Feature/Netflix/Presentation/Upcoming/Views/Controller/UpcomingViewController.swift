@@ -14,11 +14,11 @@ class UpcomingViewController: UIViewController {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<UpcomingViewModel.Sections, Movie>
     
     //MARK: - Attributes
-    private var tableView: UITableView?
+    private var tableView = UITableView()
     private let upcomingVM = UpcomingViewModel()
     
     private var dataSource: DataSource?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -43,14 +43,10 @@ extension UpcomingViewController {
         dataSource?.apply(snapshot)
     }
     
-    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
-        Task {
-            let detailView = TitlePreviewViewController()
-            detailView.configure(with: movie, youtubeID: youtubeID)
-            DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailView, animated: true)
-            }
-        }
+    private func navigateToDetailView(with movie: Movie) {
+        let detailView = DetailView()
+        detailView.configure(with: movie)
+        self.navigationController?.pushViewController(detailView, animated: true)
     }
 }
 
@@ -69,8 +65,6 @@ private extension UpcomingViewController {
     }
     
     func setupTableView() {
-        tableView = UITableView()
-        guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
@@ -85,7 +79,6 @@ private extension UpcomingViewController {
     }
     
     func configureDataSource() {
-        guard let tableView = tableView else { return }
         dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as? TableViewCell else { return UITableViewCell() }
             cell.configure(with: movie)
@@ -99,14 +92,8 @@ private extension UpcomingViewController {
 extension UpcomingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
         let movie = upcomingVM.movies[indexPath.row]
-        
-        Task {
-            let movieYoutube = await upcomingVM.getMovieDetail(for: movie)
-            guard let movieYoutube = movieYoutube else { return }
-            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
-        }
+        navigateToDetailView(with: movie)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

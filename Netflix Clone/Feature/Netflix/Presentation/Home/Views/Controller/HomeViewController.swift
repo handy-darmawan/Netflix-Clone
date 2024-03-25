@@ -18,10 +18,9 @@ class HomeViewController: UIViewController {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<HomeViewModel.Sections, Movie>
     
     //MARK: - Attribute
-    private(set) var collectionView: UICollectionView?
-    //    private var randomMovie: Movie?
+    private var collectionView: UICollectionView?
     private var dataSource: DataSource?
-    var homeVM = HomeViewModel()
+    private var homeVM = HomeViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,17 +39,13 @@ class HomeViewController: UIViewController {
 
 //MARK: Actions
 extension HomeViewController {
-    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
-        Task {
-            let detailView = TitlePreviewViewController()
-            detailView.configure(with: movie, youtubeID: youtubeID)
-            DispatchQueue.main.async {
-                self.resetNavigationBar()
-                self.navigationController?.pushViewController(detailView, animated: true)
-            }
-        }
+    private func navigateToDetailView(with movie: Movie) {
+        let detailView = DetailView()
+        detailView.configure(with: movie)
+        self.resetNavigationBar()
+        self.navigationController?.pushViewController(detailView, animated: true)
     }
-    
+
     private func updateSnapshots() {
         var snapshot = Snapshot()
         snapshot.appendSections(HomeViewModel.Sections.allCases)
@@ -89,6 +84,7 @@ private extension HomeViewController {
             
             switch section {
             case .header:
+                cell.delegate = self
                 cell.configureFor(type: .header, movie: movie)
             default:
                 cell.configureFor(type: .normal, movie: movie)
@@ -167,21 +163,16 @@ extension HomeViewController: UICollectionViewDelegate {
         var movie: Movie?
         let section = HomeViewModel.Sections(rawValue: indexPath.section)
         switch section {
-            case .header, .trendingMovies: movie = homeVM.headerMovies
-            case .popular: movie = homeVM.popularMovies[indexPath.row]
-            case .trendingTV: movie = homeVM.trendingTV[indexPath.row]
-            case .upcomingMovies: movie = homeVM.upcomingMovies[indexPath.row]
-            case .topRated: movie = homeVM.topRatedMovies[indexPath.row]
-            default: return
+        case .header, .trendingMovies: movie = homeVM.headerMovies
+        case .popular: movie = homeVM.popularMovies[indexPath.row]
+        case .trendingTV: movie = homeVM.trendingTV[indexPath.row]
+        case .upcomingMovies: movie = homeVM.upcomingMovies[indexPath.row]
+        case .topRated: movie = homeVM.topRatedMovies[indexPath.row]
+        default: return
         }
         
         guard let movie = movie else { return }
-        
-        Task {
-            let movieYoutube = await homeVM.getMovieDetail(for: movie)
-            guard let movieYoutube = movieYoutube else { return }
-            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
-        }
+        navigateToDetailView(with: movie)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -190,4 +181,16 @@ extension HomeViewController: UICollectionViewDelegate {
         navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
     }
     
+}
+
+extension HomeViewController: MovieCellDelegate {
+    func buttonDidTapped(for type: ButtonType, with movie: Movie) {
+        if type == .play {
+            navigateToDetailView(with: movie)
+        }
+        else if type == .download {
+            //TODO: operation to save
+            Task { await homeVM.saveMovie(with: movie) }
+        }
+    }
 }

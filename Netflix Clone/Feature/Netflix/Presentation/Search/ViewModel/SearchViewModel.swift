@@ -10,18 +10,15 @@ import UIKit
 class SearchViewModel {
     enum Sections { case search }
     
-    private let SearchMoviesUseCase: SearchByKeywordUseCase
+    private let searchMoviesUseCase: SearchByKeywordUseCase
     private let getDiscoverMoviesUseCase: GetDiscoverMoviesUseCase
-    private let getMovieLinks: GetMovieUseCase
     private let movieRepository = MovieRepository.shared
-    private let youtubeRepository = YoutubeRepository.shared
     
     var movies: [Movie] = []
     
     init() {
-        SearchMoviesUseCase = SearchByKeywordUseCase(movieRepository: movieRepository)
+        searchMoviesUseCase = SearchByKeywordUseCase(movieRepository: movieRepository)
         getDiscoverMoviesUseCase = GetDiscoverMoviesUseCase(movieRepository: movieRepository)
-        getMovieLinks = GetMovieUseCase(youtubeRepository: youtubeRepository)
     }
 }
 
@@ -35,7 +32,7 @@ extension SearchViewModel {
 extension SearchViewModel {
     func searchMovies(with query: String) async {
         do {
-            let results = try await SearchMoviesUseCase.execute(with: query)
+            let results = try await searchMoviesUseCase.execute(with: query)
             movies = results
         } catch {
             print(error.localizedDescription)
@@ -48,17 +45,6 @@ extension SearchViewModel {
             movies = results
         } catch {
             print(error.localizedDescription)
-        }
-    }
-    
-    func getMovieDetail(for movie: Movie) async -> Youtube? {
-        do {
-            guard let title = movie.originalTitle ?? movie.originalName else { return nil }
-            let result = try await getMovieLinks.execute(with: "\(title) Trailer")
-            return result
-        } catch {
-            print(error.localizedDescription)
-            return nil
         }
     }
 }

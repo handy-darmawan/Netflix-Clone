@@ -18,7 +18,7 @@ class SearchViewController: UIViewController {
     private let searchVM = SearchViewModel()
     
     private var dataSource: DataSource?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -43,14 +43,10 @@ extension SearchViewController {
         dataSource?.apply(snapshot)
     }
     
-    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
-        Task {
-            let detailView = TitlePreviewViewController()
-            detailView.configure(with: movie, youtubeID: youtubeID)
-            DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailView, animated: true)
-            }
-        }
+    private func navigateToDetailView(with movie: Movie) {
+        let detailView = DetailView()
+        detailView.configure(with: movie)
+        self.navigationController?.pushViewController(detailView, animated: true)
     }
 }
 
@@ -109,14 +105,8 @@ private extension SearchViewController {
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
         let movie = searchVM.movies[indexPath.row]
-        
-        Task {
-            let movieYoutube = await searchVM.getMovieDetail(for: movie)
-            guard let movieYoutube = movieYoutube else { return }
-            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
-        }
+        navigateToDetailView(with: movie)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -145,7 +135,7 @@ extension SearchViewController: UISearchResultsUpdating {
 
 
 extension SearchViewController: SearchResultsViewControllerDelegate {
-    func didTap(movie: Movie, youtubeID: String) {
-        navigateToDetailView(with: movie, youtubeID: youtubeID)
+    func didTap(movie: Movie) {
+        navigateToDetailView(with: movie)
     }
 }
