@@ -19,7 +19,7 @@ class MovieCell: UICollectionViewCell {
     private var movie: Movie?
     
     //MARK: Delegate
-    weak var delegate: MovieCellDelegate?
+    weak var delegate: DetailViewDelegate?
 
     
     override init(frame: CGRect) {
@@ -51,7 +51,7 @@ private extension MovieCell {
             //show action
         }
         
-        delegate?.buttonDidTapped(for: buttonType, with: movie)
+        delegate?.itemTapped(for: buttonType, with: movie)
     }
     
     func setImage(with movie: Movie) {
@@ -131,6 +131,4 @@ private extension MovieCell {
             downloadButton.widthAnchor.constraint(equalToConstant: 100)
         ])
     }
-    
-    
 }

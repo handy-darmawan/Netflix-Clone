@@ -30,7 +30,7 @@ class TableViewCell: UITableViewCell {
 
 //MARK: Actions
 extension TableViewCell {
-    func configure(with movie: Movie) {
+    func configure(for movie: Movie) {
         guard
             let posterPath = movie.posterPath,
             let title = movie.originalName ?? movie.originalTitle

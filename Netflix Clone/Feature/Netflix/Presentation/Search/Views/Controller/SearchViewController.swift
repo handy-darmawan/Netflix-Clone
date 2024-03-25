@@ -100,7 +100,7 @@ private extension SearchViewController {
         guard let tableView = tableView else { return }
         dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as? TableViewCell else { return UITableViewCell() }
-            cell.configure(with: movie)
+            cell.configure(for: movie)
             return cell
         }
     }
@@ -140,8 +140,11 @@ extension SearchViewController: UISearchResultsUpdating {
 }
 
 
-extension SearchViewController: SearchResultsViewControllerDelegate {
-    func didTap(movie: Movie) {
-        navigateToDetailView(with: movie)
+extension SearchViewController: DetailViewDelegate {
+    func itemTapped(for type: ButtonType, with movie: Movie) {
+        if type == .none {
+            navigateToDetailView(with: movie)
+        }
     }
+    
 }

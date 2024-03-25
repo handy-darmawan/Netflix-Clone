@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol SearchResultsViewControllerDelegate: AnyObject {
-    func didTap(movie: Movie)
-}
-
 class SearchResultsViewController: UIViewController {
     //MARK: - Data Source
     private typealias DataSource = UICollectionViewDiffableDataSource<SearchViewModel.Sections, Movie>
@@ -19,10 +15,9 @@ class SearchResultsViewController: UIViewController {
     //MARK: - Attributes
     private var searchVM: SearchViewModel = SearchViewModel()
     private var dataSource: DataSource?
-    weak var delegate: SearchResultsViewControllerDelegate?
-    var movies: [Movie] = []
-    
+    weak var delegate: DetailViewDelegate?
     private var collectionView: UICollectionView?
+    var movies: [Movie] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +33,7 @@ class SearchResultsViewController: UIViewController {
 
 //MARK: Actions
 extension SearchResultsViewController {
-    func updateSnapshots() {
+    private func updateSnapshots() {
         var snapshot = Snapshot()
         snapshot.appendSections([.search])
         snapshot.appendItems(movies)
@@ -96,6 +91,6 @@ extension SearchResultsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         let movie = movies[indexPath.row]
-        delegate?.didTap(movie: movie)
+        delegate?.itemTapped(for: .none, with: movie)
     }
 }

@@ -10,4 +10,5 @@ import Foundation
 enum ButtonType: String {
     case play = "Play"
     case download = "Download"
+    case none = "None"
 }

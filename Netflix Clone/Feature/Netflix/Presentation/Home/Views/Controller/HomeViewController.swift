@@ -183,8 +183,8 @@ extension HomeViewController: UICollectionViewDelegate {
     
 }
 
-extension HomeViewController: MovieCellDelegate {
-    func buttonDidTapped(for type: ButtonType, with movie: Movie) {
+extension HomeViewController: DetailViewDelegate {
+    func itemTapped(for type: ButtonType, with movie: Movie) {
         if type == .play {
             navigateToDetailView(with: movie)
         }

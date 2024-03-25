@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol MovieCellDelegate: AnyObject {
-    func buttonDidTapped(for type: ButtonType, with movie: Movie)
+protocol DetailViewDelegate: AnyObject {
+    func itemTapped(for type: ButtonType, with movie: Movie)
 }

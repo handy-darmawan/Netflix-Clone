@@ -66,7 +66,6 @@ private extension HomeViewModel {
         } catch {
             print(error.localizedDescription)
         }
-        
     }
     
     func getTrendingTV() async {

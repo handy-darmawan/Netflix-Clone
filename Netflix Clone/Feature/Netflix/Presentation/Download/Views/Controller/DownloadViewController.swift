@@ -27,6 +27,7 @@ class DownloadViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         configureDataSource()
+        
         Task {
             await downloadVM.onLoad()
             DispatchQueue.main.async { [weak self] in
@@ -88,7 +89,7 @@ private extension DownloadViewController {
     func configureDataSource() {
         dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as? TableViewCell else { return UITableViewCell() }
-            cell.configure(with: movie)
+            cell.configure(for: movie)
             return cell
         }
     }

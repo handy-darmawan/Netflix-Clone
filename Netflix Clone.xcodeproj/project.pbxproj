@@ -8,9 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8004672F2B937C810060E055 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8004672E2B937C810060E055 /* DetailView.swift */; };
-		800467312B937DC90060E055 /* TitlePreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800467302B937DC90060E055 /* TitlePreviewViewModel.swift */; };
 		800FDC112B91E076000ED4F0 /* Youtube.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800FDC102B91E076000ED4F0 /* Youtube.swift */; };
-		801403172BB1715400481B9C /* MovieCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801403162BB1715400481B9C /* MovieCellDelegate.swift */; };
+		801403172BB1715400481B9C /* DetailViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801403162BB1715400481B9C /* DetailViewDelegate.swift */; };
 		801403192BB1718800481B9C /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801403182BB1718800481B9C /* ButtonType.swift */; };
 		801A715A2BA6C43000086382 /* MovieDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A71592BA6C43000086382 /* MovieDTO.swift */; };
 		801A715C2BA6C4AC00086382 /* MovieDTOMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A715B2BA6C4AC00086382 /* MovieDTOMapper.swift */; };
@@ -86,9 +85,8 @@
 
 /* Begin PBXFileReference section */
 		8004672E2B937C810060E055 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
-		800467302B937DC90060E055 /* TitlePreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitlePreviewViewModel.swift; sourceTree = "<group>"; };
 		800FDC102B91E076000ED4F0 /* Youtube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Youtube.swift; sourceTree = "<group>"; };
-		801403162BB1715400481B9C /* MovieCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCellDelegate.swift; sourceTree = "<group>"; };
+		801403162BB1715400481B9C /* DetailViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewDelegate.swift; sourceTree = "<group>"; };
 		801403182BB1718800481B9C /* ButtonType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonType.swift; sourceTree = "<group>"; };
 		801A71592BA6C43000086382 /* MovieDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDTO.swift; sourceTree = "<group>"; };
 		801A715B2BA6C4AC00086382 /* MovieDTOMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDTOMapper.swift; sourceTree = "<group>"; };
@@ -165,7 +163,7 @@
 		801403152BB1714E00481B9C /* Delegate */ = {
 			isa = PBXGroup;
 			children = (
-				801403162BB1715400481B9C /* MovieCellDelegate.swift */,
+				801403162BB1715400481B9C /* DetailViewDelegate.swift */,
 			);
 			path = Delegate;
 			sourceTree = "<group>";
@@ -648,7 +646,6 @@
 		80EF1E7C2BA1AC2400A0601D /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				800467302B937DC90060E055 /* TitlePreviewViewModel.swift */,
 				801A71632BA7018000086382 /* HomeViewModel.swift */,
 			);
 			path = ViewModel;
@@ -841,7 +838,7 @@
 				80EF1E952BA1B4C500A0601D /* YoutubeNetworkManager.swift in Sources */,
 				80EF1E932BA1B4BF00A0601D /* MovieNetworkManager.swift in Sources */,
 				80C1C6F22BA4A5A700139A4D /* GetTrendingMoviesUseCase.swift in Sources */,
-				801403172BB1715400481B9C /* MovieCellDelegate.swift in Sources */,
+				801403172BB1715400481B9C /* DetailViewDelegate.swift in Sources */,
 				80C1C6DC2BA4A55C00139A4D /* SearchByKeywordUseCaseProtocol.swift in Sources */,
 				805AB2482B8C98B700ADB8BD /* SearchViewController.swift in Sources */,
 				80C1C6C62BA4A30B00139A4D /* YoutubeUseCase.swift in Sources */,
@@ -867,7 +864,6 @@
 				80C1C6D02BA4A53400139A4D /* MoviePersistenceUseCaseProtocol.swift in Sources */,
 				80C1C6D82BA4A54C00139A4D /* MovieActionUseCaseProtocol.swift in Sources */,
 				80A165DD2BA1EEDB00AAD8B4 /* YoutubeNetworkDataSource.swift in Sources */,
-				800467312B937DC90060E055 /* TitlePreviewViewModel.swift in Sources */,
 				8075A1812BA88BEB00B25DFD /* ErrorType.swift in Sources */,
 				80A165DB2BA1EDF600AAD8B4 /* MovieNetworkDataSourceProtocol.swift in Sources */,
 				805AB24A2B8C98BE00ADB8BD /* DownloadViewController.swift in Sources */,
