@@ -26,10 +26,17 @@ class UpcomingViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        configureDataSource()
         Task {
             await upcomingVM.onLoad()
-            self.updateSnapshot()
+            DispatchQueue.main.async { [weak self] in
+                self?.updateSnapshot()
+            }
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        dataSource = nil
     }
 }
 
@@ -56,7 +63,6 @@ private extension UpcomingViewController {
     func setup() {
         setupNavigationBar()
         setupTableView()
-        configureDataSource()
     }
     
     func setupNavigationBar() {

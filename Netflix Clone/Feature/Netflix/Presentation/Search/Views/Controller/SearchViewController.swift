@@ -26,10 +26,17 @@ class SearchViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        configureDataSource()
         Task {
             await searchVM.onLoad()
-            self.updateSnapshot()
+            DispatchQueue.main.async { [weak self] in
+                self?.updateSnapshot()
+            }
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        dataSource = nil
     }
 }
 
@@ -57,7 +64,6 @@ private extension SearchViewController {
         setupNavigationBar()
         setupSearchBar()
         setupTableView()
-        configureDataSource()
     }
     
     func setupNavigationBar() {

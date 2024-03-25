@@ -26,15 +26,17 @@ class DownloadViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        configureDataSource()
         Task {
             await downloadVM.onLoad()
-            self.updateSnapshot()
+            DispatchQueue.main.async { [weak self] in
+                self?.updateSnapshot()
+            }
         }
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-//        dataSource?.snapshot()
-        
+    override func viewWillDisappear(_ animated: Bool) {
+        dataSource = nil
     }
 }
 
