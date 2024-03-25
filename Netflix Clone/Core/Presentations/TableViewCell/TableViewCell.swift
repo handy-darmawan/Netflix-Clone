@@ -20,6 +20,7 @@ class TableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setups()
     }
+    //TODO: layout subview
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
