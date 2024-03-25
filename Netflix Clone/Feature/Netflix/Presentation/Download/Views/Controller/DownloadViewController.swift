@@ -14,7 +14,7 @@ class DownloadViewController: UIViewController {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<DownloadViewModel.Sections, Movie>
     
     //MARK: - Attributes
-    private var tableView: UITableView?
+    private var tableView = UITableView()
     private let downloadVM = DownloadViewModel()
     
     private var dataSource: DataSource?
@@ -43,14 +43,10 @@ extension DownloadViewController {
         dataSource?.apply(snapshot)
     }
     
-    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
-        Task {
-            let detailView = TitlePreviewViewController()
-            detailView.configure(with: movie, youtubeID: youtubeID)
-            DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailView, animated: true)
-            }
-        }
+    private func navigateToDetailView(with movie: Movie) {
+        let detailView = DetailView()
+        detailView.configure(with: movie)
+        self.navigationController?.pushViewController(detailView, animated: true)
     }
 }
 
@@ -69,8 +65,6 @@ private extension DownloadViewController {
     }
     
     func setupTableView() {
-        tableView = UITableView()
-        guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
@@ -85,7 +79,6 @@ private extension DownloadViewController {
     }
     
     func configureDataSource() {
-        guard let tableView = tableView else { return }
         dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as? TableViewCell else { return UITableViewCell() }
             cell.configure(with: movie)
@@ -100,12 +93,7 @@ extension DownloadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let movie = downloadVM.movies[indexPath.row]
-        
-        Task {
-            let movieYoutube = await downloadVM.getMovieDetail(for: movie)
-            guard let movieYoutube = movieYoutube else { return }
-            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
-        }
+        navigateToDetailView(with: movie)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -113,7 +101,6 @@ extension DownloadViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        print("swipe")
         let delete = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (_, _, _) in
             guard let self = self else { return }
             let movie = self.downloadVM.movies[indexPath.row]

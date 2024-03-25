@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+enum ButtonType: String {
+    case play = "Play"
+    case download = "Download"
+}
