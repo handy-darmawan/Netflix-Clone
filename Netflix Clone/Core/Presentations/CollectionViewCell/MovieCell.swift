@@ -8,15 +8,17 @@
 import UIKit
 import SDWebImage
 
+
 class MovieCell: UICollectionViewCell {
     static let identifier = "CellItem"
     
-    private var movieImageView: UIImageView?
-    private var playButton: UIButton?
-    private var downloadButton: UIButton?
+    private var movieImageView = UIImageView()
+    private var playButton = UIButton()
+    private var downloadButton = UIButton()
     private var movie: Movie?
-    //we need callback here to handle button
     
+    weak var delegate: MovieCellDelegate?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -39,44 +41,22 @@ private extension MovieCell {
     @objc func buttonTapped(_ sender: UIButton) {
         guard
             let buttonLabel = sender.titleLabel?.text,
-            let movie = movie,
-            let title = movie.originalTitle ?? movie.originalName,
-            let titleOverview = movie.overview
-        else { return }
-        
-        if buttonLabel == "Play" {
-            print("Play button tapped \(title)")
-            //            NetworkManager.shared.getMovieDetail(with: title + " trailer") { results in
-            //                switch results {
-            //                case .success(let results):
-            //                    let vm = TitlePreviewViewModel(title: title, youtubeView: results, titleOverview: titleOverview)
-            //
-            //                    guard let playButtonDidTapped = self.playButtonDidTapped else { return }
-            //                    playButtonDidTapped(vm)
-            //                case .failure(let error):
-            //                    print(error)
-            //                }
-            //            }
-        } else if buttonLabel == "Download" {
-            print("Download button tapped \(title)")
-            //            CoreDataDataSource.shared.save(movie: movie) { results in
-            //                switch results {
-            //                case .success:
-            //                    print("Movie saved")
-            //                case .failure(let error):
-            //                    print(error)
-            //                }
-            //            }
-            //        }
+            let buttonType = ButtonType(rawValue: buttonLabel),
+            let movie = movie
+        else {
+            return
+            //show action
         }
+        
+        //use delegate
+        delegate?.buttonDidTapped(for: buttonType, with: movie)
     }
     
     func setImage(with movie: Movie) {
         self.movie = movie
         guard
             let imagePath = movie.posterPath,
-            let url = URL(string: "https://image.tmdb.org/t/p/w500\(imagePath))"),
-            let movieImageView = movieImageView
+            let url = URL(string: "https://image.tmdb.org/t/p/w500\(imagePath))")
         else { return }
         movieImageView.sd_setImage(with: url, completed: nil)
     }
@@ -105,8 +85,6 @@ private extension MovieCell {
     }
     
     func setupMovieImageView() {
-        movieImageView = UIImageView(frame: .zero)
-        guard let movieImageView = movieImageView else { return }
         movieImageView.translatesAutoresizingMaskIntoConstraints = false
         movieImageView.clipsToBounds = true
         movieImageView.contentMode = .scaleAspectFill
@@ -121,10 +99,8 @@ private extension MovieCell {
     }
     
     func setupPlayButton() {
-        playButton = UIButton(frame: .zero)
-        guard let playButton = playButton else { return }
         playButton.translatesAutoresizingMaskIntoConstraints = false
-        playButton.setTitle("Play", for: .normal)
+        playButton.setTitle(ButtonType.play.rawValue, for: .normal)
         playButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         playButton.layer.borderWidth = 1
         playButton.layer.borderColor = UIColor.white.cgColor
@@ -139,10 +115,8 @@ private extension MovieCell {
     }
     
     func setupDownloadButton() {
-        downloadButton = UIButton(frame: .zero)
-        guard let downloadButton = downloadButton else { return }
         downloadButton.translatesAutoresizingMaskIntoConstraints = false
-        downloadButton.setTitle("Download", for: .normal)
+        downloadButton.setTitle(ButtonType.download.rawValue, for: .normal)
         downloadButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         downloadButton.layer.borderWidth = 1
         downloadButton.layer.borderColor = UIColor.white.cgColor
