@@ -12,13 +12,16 @@ import SDWebImage
 class MovieCell: UICollectionViewCell {
     static let identifier = "CellItem"
     
+    //MARK: Attributes
     private var movieImageView = UIImageView()
     private var playButton = UIButton()
     private var downloadButton = UIButton()
     private var movie: Movie?
     
+    //MARK: Delegate
     weak var delegate: MovieCellDelegate?
 
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -48,7 +51,6 @@ private extension MovieCell {
             //show action
         }
         
-        //use delegate
         delegate?.buttonDidTapped(for: buttonType, with: movie)
     }
     

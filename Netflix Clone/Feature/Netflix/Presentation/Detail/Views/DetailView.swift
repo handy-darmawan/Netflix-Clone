@@ -21,21 +21,28 @@ class DetailView: UIViewController {
     private var movie: Movie?
     private let detailVM = DetailViewModel()
 
-    init() {
-        super.init(nibName: nil, bundle: nil)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setups()
+        configure(with: movie)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    deinit {
+        movie = nil
+        webView.stopLoading()
+        webView.removeFromSuperview()
     }
 }
 
 //MARK: - Actions
 extension DetailView {
-    func configure(with movie: Movie) {
+    func setMovie(with movie: Movie) {
         self.movie = movie
+    }
+    
+    private func configure(with movie: Movie?) {
+        guard let movie = movie else { return }
         titleLabel.text = movie.originalName ?? movie.originalTitle
         overviewLabel.text = movie.overview
         configureWebView(with: movie)

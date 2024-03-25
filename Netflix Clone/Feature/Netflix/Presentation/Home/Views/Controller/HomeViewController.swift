@@ -41,7 +41,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController {
     private func navigateToDetailView(with movie: Movie) {
         let detailView = DetailView()
-        detailView.configure(with: movie)
+        detailView.setMovie(with: movie)
         self.resetNavigationBar()
         self.navigationController?.pushViewController(detailView, animated: true)
     }

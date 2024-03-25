@@ -45,7 +45,7 @@ extension SearchViewController {
     
     private func navigateToDetailView(with movie: Movie) {
         let detailView = DetailView()
-        detailView.configure(with: movie)
+        detailView.setMovie(with: movie)
         self.navigationController?.pushViewController(detailView, animated: true)
     }
 }
