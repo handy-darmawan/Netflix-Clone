@@ -50,9 +50,8 @@ extension HomeViewModel {
     func saveMovie(with movie: Movie) async {
         do {
             try await saveMovieUseCase.execute(with: movie)
-        } catch {
-            print(error.localizedDescription)
-        }
+        } catch(let error as LocalError) { await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
 }
 
@@ -61,47 +60,42 @@ extension HomeViewModel {
 private extension HomeViewModel {
     func getTrendingMovies() async {
         do {
-            let results = try await getTrendingMoviesUseCase.execute()
-            trendingMovies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            trendingMovies = try await getTrendingMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     func getTrendingTV() async {
         do {
-            let results = try await getTrendingTVUseCase.execute()
-            trendingTV = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            trendingTV = try await getTrendingTVUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     func getPopularMovies() async {
         do {
-            let results = try await getPopularMoviesUseCase.execute()
-            popularMovies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            popularMovies = try await getPopularMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     func getTopRatedMovies() async {
         do {
-            let results = try await getTopRatedMoviesUseCase.execute()
-            topRatedMovies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            topRatedMovies = try await getTopRatedMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     func getUpcomingMovies() async {
         do {
-            let results = try await getUpcomingMoviesUseCase.execute()
-            upcomingMovies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            upcomingMovies = try await getUpcomingMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
 }
 

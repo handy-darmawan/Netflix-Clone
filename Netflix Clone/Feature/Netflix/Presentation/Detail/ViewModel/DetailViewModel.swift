@@ -27,9 +27,11 @@ extension DetailViewModel {
     func saveMovie(with movie: Movie) async {
         do {
             try await saveMovieUseCase.execute(with: movie)
-        } catch {
-            print(error.localizedDescription)
+            await AlertUtility.showAlert(with: "Information", message: "Movie Saved")
+        } catch(let error as LocalError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
         }
+        catch {}
     }
     
     func getYoutubeID(for movie: Movie) async -> String? {
@@ -37,9 +39,10 @@ extension DetailViewModel {
             guard let title = movie.originalTitle ?? movie.originalName else { return nil }
             let result = try await getMovieUseCase.execute(with: "\(title) Trailer")
             return result.videoId
-        } catch {
-            print(error.localizedDescription)
-            return nil
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
         }
+        catch {}
+        return nil
     }
 }

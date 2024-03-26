@@ -84,6 +84,7 @@ private extension SearchViewController {
         tableView = UITableView()
         guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.separatorColor = .clear
         tableView.delegate = self
         tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
         view.addSubview(tableView)

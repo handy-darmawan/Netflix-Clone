@@ -33,6 +33,7 @@
 		806BF1CF2BAAD85D00771C09 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BF1CE2BAAD85D00771C09 /* SearchViewModel.swift */; };
 		806BF1D12BAAE8CF00771C09 /* DownloadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BF1D02BAAE8CF00771C09 /* DownloadViewModel.swift */; };
 		8075A1812BA88BEB00B25DFD /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8075A1802BA88BEB00B25DFD /* ErrorType.swift */; };
+		809716DF2BB2DBC500E9396F /* AlertUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809716DE2BB2DBC500E9396F /* AlertUtility.swift */; };
 		80A165D92BA1EDE300AAD8B4 /* MovieNetworkDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A165D82BA1EDE300AAD8B4 /* MovieNetworkDataSource.swift */; };
 		80A165DB2BA1EDF600AAD8B4 /* MovieNetworkDataSourceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A165DA2BA1EDF600AAD8B4 /* MovieNetworkDataSourceProtocol.swift */; };
 		80A165DD2BA1EEDB00AAD8B4 /* YoutubeNetworkDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A165DC2BA1EEDB00AAD8B4 /* YoutubeNetworkDataSource.swift */; };
@@ -112,6 +113,7 @@
 		806BF1CE2BAAD85D00771C09 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		806BF1D02BAAE8CF00771C09 /* DownloadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewModel.swift; sourceTree = "<group>"; };
 		8075A1802BA88BEB00B25DFD /* ErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorType.swift; sourceTree = "<group>"; };
+		809716DE2BB2DBC500E9396F /* AlertUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertUtility.swift; sourceTree = "<group>"; };
 		80A165D82BA1EDE300AAD8B4 /* MovieNetworkDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieNetworkDataSource.swift; sourceTree = "<group>"; };
 		80A165DA2BA1EDF600AAD8B4 /* MovieNetworkDataSourceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieNetworkDataSourceProtocol.swift; sourceTree = "<group>"; };
 		80A165DC2BA1EEDB00AAD8B4 /* YoutubeNetworkDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeNetworkDataSource.swift; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 		801ED7012BA16CB7002C931A /* Presentations */ = {
 			isa = PBXGroup;
 			children = (
+				809716DD2BB2DB9900E9396F /* Alert */,
 				806BF1D22BAAF41E00771C09 /* CollectionViewCell */,
 				80EF1E882BA1AFF600A0601D /* PreviewViewController */,
 				80EF1E872BA1AFD700A0601D /* TableViewCell */,
@@ -335,6 +338,14 @@
 				8075A1802BA88BEB00B25DFD /* ErrorType.swift */,
 			);
 			path = Enum;
+			sourceTree = "<group>";
+		};
+		809716DD2BB2DB9900E9396F /* Alert */ = {
+			isa = PBXGroup;
+			children = (
+				809716DE2BB2DBC500E9396F /* AlertUtility.swift */,
+			);
+			path = Alert;
 			sourceTree = "<group>";
 		};
 		80A165D42BA1EDA600AAD8B4 /* CoreData */ = {
@@ -878,6 +889,7 @@
 				8054DCAF2BA9805400B8C356 /* HeaderView.swift in Sources */,
 				80C1C6B52BA49E4500139A4D /* LocalDataSourceProtocol.swift in Sources */,
 				801A715E2BA6C59C00086382 /* YoutubeDTO.swift in Sources */,
+				809716DF2BB2DBC500E9396F /* AlertUtility.swift in Sources */,
 				80C1C6C82BA4A3CD00139A4D /* GetMovieUseCaseProtocol.swift in Sources */,
 				80C1C6D62BA4A54800139A4D /* FetchUseCase.swift in Sources */,
 				801A715A2BA6C43000086382 /* MovieDTO.swift in Sources */,

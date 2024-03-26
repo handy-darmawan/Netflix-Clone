@@ -32,18 +32,18 @@ extension DownloadViewModel {
 extension DownloadViewModel {
     private func fetchMovies() async {
         do {
-            let results = try await fetchMoviesUseCase.execute()
-            movies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            movies = try await fetchMoviesUseCase.execute()
+        } catch(let error as LocalError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     func deleteMovie(with movie: Movie) async {
         do {
             try await deleteMovie.execute(with: movie)
-        } catch {
-            print(error.localizedDescription)
-        }
+            await AlertUtility.showAlert(with: "Information", message: "Movie Deleted")
+        } catch(let error as LocalError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
 }

@@ -72,6 +72,7 @@ private extension UpcomingViewController {
     
     func setupTableView() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.separatorColor = .clear
         tableView.delegate = self
         tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
         view.addSubview(tableView)

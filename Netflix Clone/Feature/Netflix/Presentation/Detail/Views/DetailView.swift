@@ -13,7 +13,7 @@ class DetailView: UIViewController {
     
     //MARK: - Attributes
     private var titleLabel = UILabel()
-    private var webView = WKWebView()
+    private var webView: WKWebView?
     private var overviewLabel = UILabel()
     private var downloadButton = UIButton()
     private let containerView = UIView()
@@ -30,8 +30,7 @@ class DetailView: UIViewController {
     
     deinit {
         movie = nil
-        webView.stopLoading()
-        webView.removeFromSuperview()
+        webView = nil
     }
 }
 
@@ -50,21 +49,16 @@ extension DetailView {
     
     private func configureWebView(with movie: Movie) {
         Task {
-            //fetch youtubeID
             let youtubeID = await detailVM.getYoutubeID(for: movie) ?? "Unknown"
             guard let url = URL(string: "https://www.youtube.com/watch?v=" + youtubeID) else { return }
-            webView.load(URLRequest(url: url))
+            webView?.load(URLRequest(url: url))
         }
     }
     
     @objc
     private func downloadButtonTapped(sender: UIButton) {
         guard let movie = movie else { return }
-        
-        Task {
-            await detailVM.saveMovie(with: movie)
-            print("movie saved") //show data
-        }
+        Task { await detailVM.saveMovie(with: movie) }
     }
 }
 
@@ -92,6 +86,8 @@ private extension DetailView {
     }
     
     func setupWebView() {
+        webView = WKWebView()
+        guard let webView = webView else { return }
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.configuration.preferences.isElementFullscreenEnabled = true
         webView.scrollView.isScrollEnabled = false
@@ -110,6 +106,8 @@ private extension DetailView {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.font = .systemFont(ofSize: 22, weight: .bold)
         containerView.addSubview(titleLabel)
+        
+        guard let webView = webView else { return }
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: webView.bottomAnchor, constant: 20),

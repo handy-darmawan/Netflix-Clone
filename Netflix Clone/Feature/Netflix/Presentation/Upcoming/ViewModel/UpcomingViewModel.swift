@@ -31,10 +31,9 @@ extension UpcomingViewModel {
 extension UpcomingViewModel {
     private func fetchUpcomingMovies() async {
         do {
-            let results = try await getUpcomingMoviesUseCase.execute()
-            movies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            movies = try await getUpcomingMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
 }

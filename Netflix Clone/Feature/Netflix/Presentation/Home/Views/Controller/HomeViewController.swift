@@ -9,7 +9,9 @@ import UIKit
 
 /**
  Update:
+ 1. add error handling
  2. HeroHeaderView -> Use UIStackView to make autolayout in button
+ 3. Make sure autolayout when device rotated
  */
 
 class HomeViewController: UIViewController {
@@ -35,6 +37,7 @@ class HomeViewController: UIViewController {
         }
     }
 }
+
 
 
 //MARK: Actions

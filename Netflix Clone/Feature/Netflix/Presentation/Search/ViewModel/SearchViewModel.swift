@@ -32,19 +32,17 @@ extension SearchViewModel {
 extension SearchViewModel {
     func searchMovies(with query: String) async {
         do {
-            let results = try await searchMoviesUseCase.execute(with: query)
-            movies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            movies = try await searchMoviesUseCase.execute(with: query)
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     private func getDiscoverMovies() async {
         do {
-            let results = try await getDiscoverMoviesUseCase.execute()
-            movies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            movies = try await getDiscoverMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
 }
