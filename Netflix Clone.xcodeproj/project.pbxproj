@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8004672F2B937C810060E055 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8004672E2B937C810060E055 /* DetailView.swift */; };
+		8004672F2B937C810060E055 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8004672E2B937C810060E055 /* DetailViewController.swift */; };
 		800FDC112B91E076000ED4F0 /* Youtube.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800FDC102B91E076000ED4F0 /* Youtube.swift */; };
 		801403172BB1715400481B9C /* DetailViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801403162BB1715400481B9C /* DetailViewDelegate.swift */; };
 		801403192BB1718800481B9C /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801403182BB1718800481B9C /* ButtonType.swift */; };
@@ -85,7 +85,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8004672E2B937C810060E055 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		8004672E2B937C810060E055 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		800FDC102B91E076000ED4F0 /* Youtube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Youtube.swift; sourceTree = "<group>"; };
 		801403162BB1715400481B9C /* DetailViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewDelegate.swift; sourceTree = "<group>"; };
 		801403182BB1718800481B9C /* ButtonType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonType.swift; sourceTree = "<group>"; };
@@ -265,7 +265,7 @@
 		803A59C52BB0613C00B08D3D /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				8004672E2B937C810060E055 /* DetailView.swift */,
+				8004672E2B937C810060E055 /* DetailViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -895,7 +895,7 @@
 				801A715A2BA6C43000086382 /* MovieDTO.swift in Sources */,
 				80A165E32BA1F41000AAD8B4 /* MovieRepository.swift in Sources */,
 				80C1C6CA2BA4A3D300139A4D /* GetMovieUseCase.swift in Sources */,
-				8004672F2B937C810060E055 /* DetailView.swift in Sources */,
+				8004672F2B937C810060E055 /* DetailViewController.swift in Sources */,
 				800FDC112B91E076000ED4F0 /* Youtube.swift in Sources */,
 				801403192BB1718800481B9C /* ButtonType.swift in Sources */,
 				80DC80582B8F46F5001BF7F3 /* Movie.swift in Sources */,

@@ -10,13 +10,12 @@ import UIKit
 class SearchViewController: UIViewController {
     
     //MARK: - Data Source
-    private typealias DataSource = UITableViewDiffableDataSource<UpcomingViewModel.Sections, Movie>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<UpcomingViewModel.Sections, Movie>
+    private typealias DataSource = UITableViewDiffableDataSource<SearchViewModel.Sections, Movie>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<SearchViewModel.Sections, Movie>
     
     //MARK: - Attributes
-    private var tableView: UITableView?
+    private var tableView = UITableView()
     private let searchVM = SearchViewModel()
-    
     private var dataSource: DataSource?
     
     override func viewDidLoad() {
@@ -38,6 +37,10 @@ class SearchViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         dataSource = nil
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        setup()
+    }
 }
 
 
@@ -45,20 +48,20 @@ class SearchViewController: UIViewController {
 extension SearchViewController {
     private func updateSnapshot() {
         var snapshot = Snapshot()
-        snapshot.appendSections([.upcoming])
-        snapshot.appendItems(searchVM.movies, toSection: .upcoming)
+        snapshot.appendSections([.search])
+        snapshot.appendItems(searchVM.movies, toSection: .search)
         dataSource?.apply(snapshot)
     }
     
     private func navigateToDetailView(with movie: Movie) {
-        let detailView = DetailView()
+        let detailView = DetailViewController()
         detailView.setMovie(with: movie)
         self.navigationController?.pushViewController(detailView, animated: true)
     }
 }
 
 
-//MARK: - Setups
+//MARK: - setup
 private extension SearchViewController {
     func setup() {
         setupNavigationBar()
@@ -81,8 +84,6 @@ private extension SearchViewController {
     }
     
     func setupTableView() {
-        tableView = UITableView()
-        guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorColor = .clear
         tableView.delegate = self
@@ -98,7 +99,6 @@ private extension SearchViewController {
     }
     
     func configureDataSource() {
-        guard let tableView = tableView else { return }
         dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as? TableViewCell else { return UITableViewCell() }
             cell.configure(for: movie)

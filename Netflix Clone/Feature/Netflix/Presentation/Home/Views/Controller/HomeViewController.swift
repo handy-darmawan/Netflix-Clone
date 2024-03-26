@@ -9,9 +9,7 @@ import UIKit
 
 /**
  Update:
- 1. add error handling
  2. HeroHeaderView -> Use UIStackView to make autolayout in button
- 3. Make sure autolayout when device rotated
  */
 
 class HomeViewController: UIViewController {
@@ -26,15 +24,21 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setups()
-        configureDataSource()
+        setup()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        configureDataSource()
         Task {
             await homeVM.onLoad()
-            self.updateSnapshots()
+            DispatchQueue.main.async { [weak self] in
+                self?.updateSnapshot()
+            }
         }
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        setup()
     }
 }
 
@@ -43,13 +47,13 @@ class HomeViewController: UIViewController {
 //MARK: Actions
 extension HomeViewController {
     private func navigateToDetailView(with movie: Movie) {
-        let detailView = DetailView()
+        let detailView = DetailViewController()
         detailView.setMovie(with: movie)
         self.resetNavigationBar()
         self.navigationController?.pushViewController(detailView, animated: true)
     }
 
-    private func updateSnapshots() {
+    private func updateSnapshot() {
         var snapshot = Snapshot()
         snapshot.appendSections(HomeViewModel.Sections.allCases)
         
@@ -69,9 +73,9 @@ extension HomeViewController {
 }
 
 
-//MARK: Setups
+//MARK: Setup
 private extension HomeViewController {
-    func setups() {
+    func setup() {
         setupCollectionView()
         configureNavbar()
     }

@@ -65,7 +65,7 @@ private extension MovieCell {
 }
 
 
-//MARK: Setups
+//MARK: Setup
 private extension MovieCell {
     func setup(for type: CellType) {
         if type == .header {

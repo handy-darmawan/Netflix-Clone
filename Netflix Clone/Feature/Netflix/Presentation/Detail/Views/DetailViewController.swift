@@ -9,7 +9,7 @@ import UIKit
 import WebKit
 
 
-class DetailView: UIViewController {
+class DetailViewController: UIViewController {
     
     //MARK: - Attributes
     private var titleLabel = UILabel()
@@ -24,7 +24,7 @@ class DetailView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        setups()
+        setup()
         configure(with: movie)
     }
     
@@ -35,7 +35,7 @@ class DetailView: UIViewController {
 }
 
 //MARK: - Actions
-extension DetailView {
+extension DetailViewController {
     func setMovie(with movie: Movie) {
         self.movie = movie
     }
@@ -63,9 +63,9 @@ extension DetailView {
 }
 
 
-//MARK: - Setups
-private extension DetailView {
-    func setups() {
+//MARK: - setup
+private extension DetailViewController {
+    func setup() {
         setupContainer()
         setupWebView()
         setupTitleLabel()

@@ -30,7 +30,7 @@ class TableViewCell: UITableViewCell {
 //MARK: Actions
 extension TableViewCell {
     func configure(for movie: Movie) {
-        setups()
+        setup()
         guard
             let posterPath = movie.posterPath,
             let title = movie.originalName ?? movie.originalTitle
@@ -43,9 +43,9 @@ extension TableViewCell {
 }
 
 
-//MARK: Setups
+//MARK: Setup
 private extension TableViewCell {
-    func setups() {
+    func setup() {
         setupContainer()
         setupImageView()
         setupButton()

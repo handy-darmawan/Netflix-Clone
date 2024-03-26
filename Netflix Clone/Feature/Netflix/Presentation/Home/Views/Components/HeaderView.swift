@@ -14,7 +14,7 @@ class HeaderView: UICollectionReusableView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setups()
+        setup()
     }
     
     required init?(coder: NSCoder) {
@@ -35,7 +35,7 @@ extension HeaderView {
 
 //MARK: Setup
 private extension HeaderView {
-    func setups() {
+    func setup() {
         setupLabelConstraints()
     }
     

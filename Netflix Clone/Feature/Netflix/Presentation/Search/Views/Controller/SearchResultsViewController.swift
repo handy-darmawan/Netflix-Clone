@@ -22,18 +22,23 @@ class SearchResultsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        setups()
+        setup()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        updateSnapshots()
+        configureDataSource()
+        updateSnapshot()
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        setup()
     }
 }
 
 
 //MARK: Actions
 extension SearchResultsViewController {
-    private func updateSnapshots() {
+    private func updateSnapshot() {
         var snapshot = Snapshot()
         snapshot.appendSections([.search])
         snapshot.appendItems(movies)
@@ -42,16 +47,15 @@ extension SearchResultsViewController {
     
     func update(with movies: [Movie]) {
         self.movies = movies
-        updateSnapshots()
+        updateSnapshot()
     }
 }
 
 
-//MARK: Setups
+//MARK: Setup
 private extension SearchResultsViewController {
-    func setups() {
+    func setup() {
         setupCollectionView()
-        setupDataSource()
     }
     
     func setupCollectionView() {
@@ -77,7 +81,7 @@ private extension SearchResultsViewController {
         ])
     }
     
-    func setupDataSource() {
+    func configureDataSource() {
         guard let collectionView = collectionView else { return }
         dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, movie in
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCell.identifier, for: indexPath) as? MovieCell else { return UICollectionViewCell() }

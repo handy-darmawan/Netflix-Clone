@@ -39,6 +39,10 @@ class DownloadViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         dataSource = nil
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        setup()
+    }
 }
 
 
@@ -59,7 +63,7 @@ private extension DownloadViewController {
     }
     
     func navigateToDetailView(with movie: Movie) {
-        let detailView = DetailView()
+        let detailView = DetailViewController()
         detailView.setMovie(with: movie)
         self.navigationController?.pushViewController(detailView, animated: true)
     }
@@ -76,14 +80,12 @@ private extension DownloadViewController {
 }
 
 
-//MARK: - Setups
+//MARK: - setup
 private extension DownloadViewController {
     func setup() {
         setupNavigationBar()
         setupTableView()
-        configureDataSource()
         setupEmptyState()
-        hideEmptyState()
     }
     
     func setupEmptyState() {

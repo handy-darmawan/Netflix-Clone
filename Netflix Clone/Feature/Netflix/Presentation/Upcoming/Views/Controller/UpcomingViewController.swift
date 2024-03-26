@@ -16,7 +16,6 @@ class UpcomingViewController: UIViewController {
     //MARK: - Attributes
     private var tableView = UITableView()
     private let upcomingVM = UpcomingViewModel()
-    
     private var dataSource: DataSource?
     
     override func viewDidLoad() {
@@ -38,6 +37,10 @@ class UpcomingViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         dataSource = nil
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        setup()
+    }
 }
 
 
@@ -51,14 +54,14 @@ extension UpcomingViewController {
     }
     
     private func navigateToDetailView(with movie: Movie) {
-        let detailView = DetailView()
+        let detailView = DetailViewController()
         detailView.setMovie(with: movie)
         self.navigationController?.pushViewController(detailView, animated: true)
     }
 }
 
 
-//MARK: - Setups
+//MARK: - setup
 private extension UpcomingViewController {
     func setup() {
         setupNavigationBar()
