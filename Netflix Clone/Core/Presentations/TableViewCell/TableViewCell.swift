@@ -12,15 +12,14 @@ class TableViewCell: UITableViewCell {
     static let identifier = "TitleTableViewCell"
     
     //MARK: - Attributes
-    private var upcomingImageView = UIImageView()
-    private var upcomingLabel = UILabel()
+    private var containerView = UIView()
+    private var movieImageView = UIImageView()
+    private var movieLabel = UILabel()
     private var playTitleButton = UIButton()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setups()
     }
-    //TODO: layout subview
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -31,14 +30,15 @@ class TableViewCell: UITableViewCell {
 //MARK: Actions
 extension TableViewCell {
     func configure(for movie: Movie) {
+        setups()
         guard
             let posterPath = movie.posterPath,
             let title = movie.originalName ?? movie.originalTitle
         else { return }
         
-        upcomingLabel.text = title
+        movieLabel.text = title
         let path = "https://image.tmdb.org/t/p/w500\(posterPath)"
-        upcomingImageView.sd_setImage(with: URL(string: path), completed: nil)
+        movieImageView.sd_setImage(with: URL(string: path), completed: nil)
     }
 }
 
@@ -46,21 +46,35 @@ extension TableViewCell {
 //MARK: Setups
 private extension TableViewCell {
     func setups() {
+        setupContainer()
         setupImageView()
         setupButton()
         setupLabel()
     }
     
-    func setupImageView() {
-        upcomingImageView.translatesAutoresizingMaskIntoConstraints = false
-        upcomingImageView.clipsToBounds = true
-        contentView.addSubview(upcomingImageView)
+    func setupContainer() {
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(containerView)
         
         NSLayoutConstraint.activate([
-            upcomingImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            upcomingImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            upcomingImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15),
-            upcomingImageView.widthAnchor.constraint(equalToConstant: 100)
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5)
+        ])
+        
+    }
+    
+    func setupImageView() {
+        movieImageView.translatesAutoresizingMaskIntoConstraints = false
+        movieImageView.clipsToBounds = true
+        containerView.addSubview(movieImageView)
+        
+        NSLayoutConstraint.activate([
+            movieImageView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            movieImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            movieImageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            movieImageView.widthAnchor.constraint(equalToConstant: 100)
         ])
     }
     
@@ -68,25 +82,27 @@ private extension TableViewCell {
         playTitleButton.translatesAutoresizingMaskIntoConstraints = false
         let playImage = UIImage(systemName: "play.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 30))
         playTitleButton.setImage(playImage, for: .normal)
-        contentView.addSubview(playTitleButton)
+        containerView.addSubview(playTitleButton)
         
         NSLayoutConstraint.activate([
-            playTitleButton.topAnchor.constraint(equalTo: contentView.topAnchor),
-            playTitleButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            playTitleButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            playTitleButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15)
+            playTitleButton.topAnchor.constraint(equalTo: containerView.topAnchor),
+            playTitleButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            playTitleButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            playTitleButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
         ])
     }
     
     func setupLabel() {
-        upcomingLabel.translatesAutoresizingMaskIntoConstraints = false
-        upcomingLabel.numberOfLines = 0
-        contentView.addSubview(upcomingLabel)
+        movieLabel.translatesAutoresizingMaskIntoConstraints = false
+        movieLabel.numberOfLines = 0
+        containerView.addSubview(movieLabel)
         
         NSLayoutConstraint.activate([
-            upcomingLabel.leadingAnchor.constraint(equalTo: upcomingImageView.trailingAnchor, constant: 30),
-            upcomingLabel.trailingAnchor.constraint(equalTo: playTitleButton.leadingAnchor, constant: -15),
-            upcomingLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            movieLabel.leadingAnchor.constraint(equalTo: movieImageView.trailingAnchor, constant: 30),
+            movieLabel.trailingAnchor.constraint(equalTo: playTitleButton.leadingAnchor),
+            movieLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            movieLabel.topAnchor.constraint(equalTo: containerView.topAnchor),
+            movieLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
     }
 }
