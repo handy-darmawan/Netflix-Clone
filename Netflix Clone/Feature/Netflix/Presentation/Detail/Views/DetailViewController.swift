@@ -1,5 +1,5 @@
 //
-//  DetailView.swift
+//  DetailViewController.swift
 //  Netflix Clone
 //
 //  Created by ndyyy on 02/03/24.
@@ -13,6 +13,7 @@ class DetailViewController: UIViewController {
     
     //MARK: - Attributes
     private var titleLabel = UILabel()
+    private var scrollView = UIScrollView()
     private var webView: WKWebView?
     private var overviewLabel = UILabel()
     private var downloadButton = UIButton()
@@ -20,7 +21,7 @@ class DetailViewController: UIViewController {
     
     private var movie: Movie?
     private let detailVM = DetailViewModel()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -66,6 +67,7 @@ extension DetailViewController {
 //MARK: - setup
 private extension DetailViewController {
     func setup() {
+        setupScrollView()
         setupContainer()
         setupWebView()
         setupTitleLabel()
@@ -73,15 +75,27 @@ private extension DetailViewController {
         setupDownloadButton()
     }
     
-    func setupContainer() {
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(containerView)
+    func setupScrollView() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
         
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-            containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
+            scrollView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
+    
+    func setupContainer() {
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(containerView)
+        
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            containerView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
         ])
     }
     
@@ -95,10 +109,10 @@ private extension DetailViewController {
         containerView.addSubview(webView)
         
         NSLayoutConstraint.activate([
-            webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            webView.topAnchor.constraint(equalTo: containerView.topAnchor),
             webView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            webView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.25),
+            webView.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0.4),
         ])
     }
     
@@ -144,6 +158,7 @@ private extension DetailViewController {
             downloadButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             downloadButton.widthAnchor.constraint(equalToConstant: 140),
             downloadButton.heightAnchor.constraint(equalToConstant: 50),
+            downloadButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20)
         ])
     }
 }
