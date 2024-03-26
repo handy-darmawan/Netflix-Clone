@@ -39,10 +39,6 @@ class DownloadViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         dataSource = nil
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        setup()
-    }
 }
 
 

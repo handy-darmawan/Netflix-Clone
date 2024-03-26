@@ -9,7 +9,9 @@ import UIKit
 
 /**
  Update:
- 2. HeroHeaderView -> Use UIStackView to make autolayout in button
+ 1. handle tap on cell (only once per ... sec)
+ 2. documentation / annotation
+ 3. HeroHeaderView -> Use UIStackView to make autolayout in button
  */
 
 class HomeViewController: UIViewController {
@@ -18,7 +20,11 @@ class HomeViewController: UIViewController {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<HomeViewModel.Sections, Movie>
     
     //MARK: - Attribute
-    private var collectionView: UICollectionView?
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout())
+        return collectionView
+    }()
+    
     private var dataSource: DataSource?
     private var homeVM = HomeViewModel()
     
@@ -36,12 +42,7 @@ class HomeViewController: UIViewController {
             }
         }
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        setup()
-    }
 }
-
 
 
 //MARK: Actions
@@ -81,7 +82,6 @@ private extension HomeViewController {
     }
     
     func configureDataSource() {
-        guard let collectionView = collectionView else { return }
         dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, movie in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCell.identifier, for: indexPath) as? MovieCell
             guard
@@ -110,8 +110,6 @@ private extension HomeViewController {
     }
     
     func setupCollectionView() {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout())
-        guard let collectionView = collectionView else { return }
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(MovieCell.self, forCellWithReuseIdentifier: MovieCell.identifier)
         collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderView.identifier)
@@ -165,6 +163,8 @@ private extension HomeViewController {
     }
 }
 
+
+//MARK: - Delegate
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         var movie: Movie?

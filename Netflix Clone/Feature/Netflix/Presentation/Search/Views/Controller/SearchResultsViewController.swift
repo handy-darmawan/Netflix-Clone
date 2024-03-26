@@ -16,8 +16,17 @@ class SearchResultsViewController: UIViewController {
     private var searchVM: SearchViewModel = SearchViewModel()
     private var dataSource: DataSource?
     weak var delegate: DetailViewDelegate?
-    private var collectionView: UICollectionView?
-    var movies: [Movie] = []
+    private var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 3 - 10, height: 200)
+        layout.minimumInteritemSpacing = 0
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        return collectionView
+    }()
+    
+    private var movies: [Movie] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,10 +37,6 @@ class SearchResultsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         configureDataSource()
         updateSnapshot()
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        setup()
     }
 }
 
@@ -59,13 +64,6 @@ private extension SearchResultsViewController {
     }
     
     func setupCollectionView() {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 3 - 10, height: 200)
-        layout.minimumInteritemSpacing = 0
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-
-        guard let collectionView = collectionView else { return }
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(MovieCell.self, forCellWithReuseIdentifier: MovieCell.identifier)
         collectionView.backgroundColor = .systemBackground
@@ -82,7 +80,6 @@ private extension SearchResultsViewController {
     }
     
     func configureDataSource() {
-        guard let collectionView = collectionView else { return }
         dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, movie in
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCell.identifier, for: indexPath) as? MovieCell else { return UICollectionViewCell() }
             cell.configureFor(type: .normal, movie: movie)

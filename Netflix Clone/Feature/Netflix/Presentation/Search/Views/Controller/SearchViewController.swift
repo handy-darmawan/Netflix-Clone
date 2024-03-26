@@ -37,10 +37,6 @@ class SearchViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         dataSource = nil
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        setup()
-    }
 }
 
 

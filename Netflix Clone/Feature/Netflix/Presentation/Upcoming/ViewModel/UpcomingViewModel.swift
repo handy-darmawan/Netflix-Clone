@@ -11,9 +11,9 @@ import Foundation
 class UpcomingViewModel {
     enum Sections { case upcoming }
     
+    //MARK: - Attributes
     private let getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
     private let movieRepository = MovieRepository.shared
-    
     var movies: [Movie] = []
     
     init() {
