@@ -7,66 +7,67 @@
 
 import UIKit
 
-protocol SearchResultsViewControllerDelegate: AnyObject {
-    func didTap(movie: Movie, youtubeID: String)
-}
-
 class SearchResultsViewController: UIViewController {
     //MARK: - Data Source
     private typealias DataSource = UICollectionViewDiffableDataSource<SearchViewModel.Sections, Movie>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<SearchViewModel.Sections, Movie>
     
-    //MARK: - Attributes
-    var searchVM: SearchViewModel = SearchViewModel()
+    //MARK: - Properties
+    private var searchVM: SearchViewModel = SearchViewModel()
+    private var movies: [Movie] = []
     private var dataSource: DataSource?
-    weak var delegate: SearchResultsViewControllerDelegate?
-    var movies: [Movie] = []
+    var viewInteraction: UICollectionView { collectionView }
+    weak var delegate: DetailViewDelegate?
     
-    private var collectionView: UICollectionView?
+    private var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 3 - 10, height: 200)
+        layout.minimumInteritemSpacing = 0
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        return collectionView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        setups()
+        setup()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        updateSnapshots()
+        enableViewInteraction()
+        configureDataSource()
+        updateSnapshot()
     }
 }
 
 
-//MARK: Actions
+//MARK: - Action
 extension SearchResultsViewController {
-    func updateSnapshots() {
+    private func updateSnapshot() {
         var snapshot = Snapshot()
         snapshot.appendSections([.search])
-        snapshot.appendItems(movies)
+        snapshot.appendItems(movies, toSection: .search)
         dataSource?.apply(snapshot)
     }
     
     func update(with movies: [Movie]) {
         self.movies = movies
-        updateSnapshots()
+        updateSnapshot()
     }
 }
 
+extension SearchResultsViewController: ViewInteraction {}
 
-//MARK: Setups
+
+//MARK: - Setup
 private extension SearchResultsViewController {
-    func setups() {
+    func setup() {
         setupCollectionView()
-        setupDataSource()
     }
     
     func setupCollectionView() {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 3 - 10, height: 200)
-        layout.minimumInteritemSpacing = 0
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-
-        guard let collectionView = collectionView else { return }
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(MovieCell.self, forCellWithReuseIdentifier: MovieCell.identifier)
         collectionView.backgroundColor = .systemBackground
@@ -82,8 +83,7 @@ private extension SearchResultsViewController {
         ])
     }
     
-    func setupDataSource() {
-        guard let collectionView = collectionView else { return }
+    func configureDataSource() {
         dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, movie in
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCell.identifier, for: indexPath) as? MovieCell else { return UICollectionViewCell() }
             cell.configureFor(type: .normal, movie: movie)
@@ -92,15 +92,13 @@ private extension SearchResultsViewController {
     }
 }
 
+
+//MARK: - Delegate
 extension SearchResultsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        disableViewInteraction()
         collectionView.deselectItem(at: indexPath, animated: true)
         let movie = movies[indexPath.row]
-        
-        Task {
-            let movieYoutube = await searchVM.getMovieDetail(for: movie)
-            guard let movieYoutube = movieYoutube else { return }
-            delegate?.didTap(movie: movie, youtubeID: movieYoutube.videoId)
-        }
+        delegate?.itemTapped(for: .none, with: movie)
     }
 }

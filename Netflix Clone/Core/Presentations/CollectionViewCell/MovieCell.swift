@@ -8,14 +8,37 @@
 import UIKit
 import SDWebImage
 
+
 class MovieCell: UICollectionViewCell {
     static let identifier = "CellItem"
     
-    private var movieImageView: UIImageView?
-    private var playButton: UIButton?
-    private var downloadButton: UIButton?
+    //MARK: - Properties
+    private var movieImageView = UIImageView()
+    private var playButton = UIButton()
+    private var downloadButton = UIButton()
     private var movie: Movie?
-    //we need callback here to handle button
+    weak var delegate: DetailViewDelegate?
+    
+    //MARK: - Computed Properties
+    private var bottomAnchorDistance: CGFloat {
+        let heightView = contentView.frame.height
+        let bottomDistance = heightView * 0.15
+        return -bottomDistance
+    }
+    
+    private var buttonSpacing: CGFloat {
+        let widthView = contentView.frame.width
+        let spacing = widthView * 0.05
+        return spacing
+    }
+    
+    private var imageURL: URL? {
+        guard
+            let imagePath = movie?.posterPath,
+            let url = URL(string: "\(MovieNetworkManager.shared.imageBaseURL)\(imagePath)")
+        else { return nil}
+        return url
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -24,7 +47,7 @@ class MovieCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     ///configure for header or just cell
     func configureFor(type: CellType, movie: Movie) {
         setup(for: type)
@@ -34,58 +57,34 @@ class MovieCell: UICollectionViewCell {
 }
 
 
-//MARK: Actions
+//MARK: - Action
 private extension MovieCell {
     @objc func buttonTapped(_ sender: UIButton) {
         guard
             let buttonLabel = sender.titleLabel?.text,
-            let movie = movie,
-            let title = movie.originalTitle ?? movie.originalName,
-            let titleOverview = movie.overview
+            let buttonType = ButtonType(rawValue: buttonLabel),
+            let movie = movie
         else { return }
         
-        if buttonLabel == "Play" {
-            print("Play button tapped \(title)")
-            //            NetworkManager.shared.getMovieDetail(with: title + " trailer") { results in
-            //                switch results {
-            //                case .success(let results):
-            //                    let vm = TitlePreviewViewModel(title: title, youtubeView: results, titleOverview: titleOverview)
-            //
-            //                    guard let playButtonDidTapped = self.playButtonDidTapped else { return }
-            //                    playButtonDidTapped(vm)
-            //                case .failure(let error):
-            //                    print(error)
-            //                }
-            //            }
-        } else if buttonLabel == "Download" {
-            print("Download button tapped \(title)")
-            //            CoreDataDataSource.shared.save(movie: movie) { results in
-            //                switch results {
-            //                case .success:
-            //                    print("Movie saved")
-            //                case .failure(let error):
-            //                    print(error)
-            //                }
-            //            }
-            //        }
-        }
+        delegate?.itemTapped(for: buttonType, with: movie)
     }
     
     func setImage(with movie: Movie) {
         self.movie = movie
-        guard
-            let imagePath = movie.posterPath,
-            let url = URL(string: "https://image.tmdb.org/t/p/w500\(imagePath))"),
-            let movieImageView = movieImageView
-        else { return }
-        movieImageView.sd_setImage(with: url, completed: nil)
+        movieImageView.sd_setImage(with: imageURL, completed: nil)
+    }
+    
+    private func clearView() {
+        subviews.forEach { $0.removeFromSuperview()}
+        layer.sublayers?.forEach { $0.removeFromSuperlayer()}
     }
 }
 
 
-//MARK: Setups
+//MARK: - Setup
 private extension MovieCell {
     func setup(for type: CellType) {
+        clearView()
         if type == .header {
             setupMovieImageView()
             setupGradient()
@@ -105,8 +104,6 @@ private extension MovieCell {
     }
     
     func setupMovieImageView() {
-        movieImageView = UIImageView(frame: .zero)
-        guard let movieImageView = movieImageView else { return }
         movieImageView.translatesAutoresizingMaskIntoConstraints = false
         movieImageView.clipsToBounds = true
         movieImageView.contentMode = .scaleAspectFill
@@ -121,10 +118,8 @@ private extension MovieCell {
     }
     
     func setupPlayButton() {
-        playButton = UIButton(frame: .zero)
-        guard let playButton = playButton else { return }
         playButton.translatesAutoresizingMaskIntoConstraints = false
-        playButton.setTitle("Play", for: .normal)
+        playButton.setTitle(ButtonType.play.rawValue, for: .normal)
         playButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         playButton.layer.borderWidth = 1
         playButton.layer.borderColor = UIColor.white.cgColor
@@ -132,17 +127,15 @@ private extension MovieCell {
         addSubview(playButton)
         
         NSLayoutConstraint.activate([
-            playButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 70),
-            playButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
-            playButton.widthAnchor.constraint(equalToConstant: 100)
+            playButton.widthAnchor.constraint(equalToConstant: 100),
+            playButton.trailingAnchor.constraint(equalTo: centerXAnchor, constant: -buttonSpacing),
+            playButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: bottomAnchorDistance),
         ])
     }
     
     func setupDownloadButton() {
-        downloadButton = UIButton(frame: .zero)
-        guard let downloadButton = downloadButton else { return }
         downloadButton.translatesAutoresizingMaskIntoConstraints = false
-        downloadButton.setTitle("Download", for: .normal)
+        downloadButton.setTitle(ButtonType.download.rawValue, for: .normal)
         downloadButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         downloadButton.layer.borderWidth = 1
         downloadButton.layer.borderColor = UIColor.white.cgColor
@@ -150,11 +143,9 @@ private extension MovieCell {
         addSubview(downloadButton)
         
         NSLayoutConstraint.activate([
-            downloadButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -70),
-            downloadButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
-            downloadButton.widthAnchor.constraint(equalToConstant: 100)
+            downloadButton.widthAnchor.constraint(equalToConstant: 100),
+            downloadButton.leadingAnchor.constraint(equalTo: centerXAnchor, constant: buttonSpacing),
+            downloadButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: bottomAnchorDistance),
         ])
     }
-    
-    
 }

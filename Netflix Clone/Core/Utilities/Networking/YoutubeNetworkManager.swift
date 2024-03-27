@@ -9,8 +9,9 @@ import Foundation
 
 class YoutubeNetworkManager {
     static let shared = YoutubeNetworkManager()
+
+    //get youtube api key from config.plist
     var API_KEY: String {
-        //get youtube api key from config.plist
         guard let path = Bundle.main.path(forResource: "Config", ofType: "plist") else { return "Config.plist not found" }
         
         let pathURL = URL(filePath: path)
@@ -23,6 +24,7 @@ class YoutubeNetworkManager {
     }
     
     let baseURL = "https://www.googleapis.com/youtube/v3/search?"
+    let youtubeBaseURL = "https://www.youtube.com/watch?v="
     
     private init() {}
 }

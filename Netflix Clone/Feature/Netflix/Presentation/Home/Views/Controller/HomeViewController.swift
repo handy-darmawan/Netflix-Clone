@@ -7,51 +7,50 @@
 
 import UIKit
 
-/**
- Update:
- 2. HeroHeaderView -> Use UIStackView to make autolayout in button
- */
 
 class HomeViewController: UIViewController {
     //MARK: - DataSource
     private typealias DataSource = UICollectionViewDiffableDataSource<HomeViewModel.Sections, Movie>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<HomeViewModel.Sections, Movie>
     
-    //MARK: - Attribute
-    private(set) var collectionView: UICollectionView?
-    //    private var randomMovie: Movie?
+    //MARK: - Properties
+    var viewInteraction: UICollectionView { collectionView }
     private var dataSource: DataSource?
-    var homeVM = HomeViewModel()
+    private var homeVM = HomeViewModel()
+
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout())
+        return collectionView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setups()
-        configureDataSource()
+        setup()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        configureDataSource()
+        enableViewInteraction()
         Task {
             await homeVM.onLoad()
-            self.updateSnapshots()
+            DispatchQueue.main.async { [weak self] in
+                self?.updateSnapshot()
+            }
         }
     }
 }
 
 
-//MARK: Actions
+//MARK: - Action
 extension HomeViewController {
-    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
-        Task {
-            let detailView = TitlePreviewViewController()
-            detailView.configure(with: movie, youtubeID: youtubeID)
-            DispatchQueue.main.async {
-                self.resetNavigationBar()
-                self.navigationController?.pushViewController(detailView, animated: true)
-            }
-        }
+    private func navigateToDetailView(with movie: Movie) {
+        let detailView = DetailViewController()
+        detailView.setMovie(with: movie)
+        self.resetNavigationBar()
+        self.navigationController?.pushViewController(detailView, animated: true)
     }
-    
-    private func updateSnapshots() {
+
+    private func updateSnapshot() {
         var snapshot = Snapshot()
         snapshot.appendSections(HomeViewModel.Sections.allCases)
         
@@ -70,16 +69,17 @@ extension HomeViewController {
     }
 }
 
+extension HomeViewController: ViewInteraction {}
 
-//MARK: Setups
+
+//MARK: - Setup
 private extension HomeViewController {
-    func setups() {
+    func setup() {
         setupCollectionView()
         configureNavbar()
     }
     
     func configureDataSource() {
-        guard let collectionView = collectionView else { return }
         dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, movie in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCell.identifier, for: indexPath) as? MovieCell
             guard
@@ -89,6 +89,7 @@ private extension HomeViewController {
             
             switch section {
             case .header:
+                cell.delegate = self
                 cell.configureFor(type: .header, movie: movie)
             default:
                 cell.configureFor(type: .normal, movie: movie)
@@ -107,8 +108,6 @@ private extension HomeViewController {
     }
     
     func setupCollectionView() {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout())
-        guard let collectionView = collectionView else { return }
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(MovieCell.self, forCellWithReuseIdentifier: MovieCell.identifier)
         collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderView.identifier)
@@ -162,26 +161,24 @@ private extension HomeViewController {
     }
 }
 
+
+//MARK: - Delegate
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        disableViewInteraction()
         var movie: Movie?
         let section = HomeViewModel.Sections(rawValue: indexPath.section)
         switch section {
-            case .header, .trendingMovies: movie = homeVM.headerMovies
-            case .popular: movie = homeVM.popularMovies[indexPath.row]
-            case .trendingTV: movie = homeVM.trendingTV[indexPath.row]
-            case .upcomingMovies: movie = homeVM.upcomingMovies[indexPath.row]
-            case .topRated: movie = homeVM.topRatedMovies[indexPath.row]
-            default: return
+        case .header, .trendingMovies: movie = homeVM.headerMovies
+        case .popular: movie = homeVM.popularMovies[indexPath.row]
+        case .trendingTV: movie = homeVM.trendingTV[indexPath.row]
+        case .upcomingMovies: movie = homeVM.upcomingMovies[indexPath.row]
+        case .topRated: movie = homeVM.topRatedMovies[indexPath.row]
+        default: return
         }
         
         guard let movie = movie else { return }
-        
-        Task {
-            let movieYoutube = await homeVM.getMovieDetail(for: movie)
-            guard let movieYoutube = movieYoutube else { return }
-            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
-        }
+        navigateToDetailView(with: movie)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -189,5 +186,15 @@ extension HomeViewController: UICollectionViewDelegate {
         let offset = scrollView.contentOffset.y + defaultOffset
         navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
     }
-    
+}
+
+extension HomeViewController: DetailViewDelegate {
+    func itemTapped(for type: ButtonType, with movie: Movie) {
+        if type == .play {
+            navigateToDetailView(with: movie)
+        }
+        else if type == .download {
+            Task { await homeVM.saveMovie(with: movie) }
+        }
+    }
 }

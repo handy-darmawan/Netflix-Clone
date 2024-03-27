@@ -10,55 +10,38 @@ import UIKit
 class SearchViewModel {
     enum Sections { case search }
     
-    private let SearchMoviesUseCase: SearchByKeywordUseCase
+    //MARK: - Properties
+    private let searchMoviesUseCase: SearchByKeywordUseCase
     private let getDiscoverMoviesUseCase: GetDiscoverMoviesUseCase
-    private let getMovieLinks: GetMovieUseCase
     private let movieRepository = MovieRepository.shared
-    private let youtubeRepository = YoutubeRepository.shared
-    
     var movies: [Movie] = []
     
     init() {
-        SearchMoviesUseCase = SearchByKeywordUseCase(movieRepository: movieRepository)
+        searchMoviesUseCase = SearchByKeywordUseCase(movieRepository: movieRepository)
         getDiscoverMoviesUseCase = GetDiscoverMoviesUseCase(movieRepository: movieRepository)
-        getMovieLinks = GetMovieUseCase(youtubeRepository: youtubeRepository)
     }
 }
 
+
+//MARK: - Action
 extension SearchViewModel {
     func onLoad() async {
         await getDiscoverMovies()
     }
-}
-
-//MARK: - Actions
-extension SearchViewModel {
+    
     func searchMovies(with query: String) async {
         do {
-            let results = try await SearchMoviesUseCase.execute(with: query)
-            movies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            movies = try await searchMoviesUseCase.execute(with: query)
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     private func getDiscoverMovies() async {
         do {
-            let results = try await getDiscoverMoviesUseCase.execute()
-            movies = results
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    func getMovieDetail(for movie: Movie) async -> Youtube? {
-        do {
-            guard let title = movie.originalTitle ?? movie.originalName else { return nil }
-            let result = try await getMovieLinks.execute(with: "\(title) Trailer")
-            return result
-        } catch {
-            print(error.localizedDescription)
-            return nil
-        }
+            movies = try await getDiscoverMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
 }

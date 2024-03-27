@@ -8,17 +8,16 @@
 import UIKit
 
 class SearchViewController: UIViewController {
-    
     //MARK: - Data Source
-    private typealias DataSource = UITableViewDiffableDataSource<UpcomingViewModel.Sections, Movie>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<UpcomingViewModel.Sections, Movie>
+    private typealias DataSource = UITableViewDiffableDataSource<SearchViewModel.Sections, Movie>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<SearchViewModel.Sections, Movie>
     
-    //MARK: - Attributes
-    private var tableView: UITableView?
+    //MARK: - Properties
+    private var tableView = UITableView()
     private let searchVM = SearchViewModel()
-    
     private var dataSource: DataSource?
-
+    var viewInteraction: UITableView { tableView }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -26,42 +25,47 @@ class SearchViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        enableViewInteraction()
+        configureDataSource()
         Task {
             await searchVM.onLoad()
-            self.updateSnapshot()
-        }
-    }
-}
-
-
-//MARK: - Actions
-extension SearchViewController {
-    private func updateSnapshot() {
-        var snapshot = Snapshot()
-        snapshot.appendSections([.upcoming])
-        snapshot.appendItems(searchVM.movies, toSection: .upcoming)
-        dataSource?.apply(snapshot)
-    }
-    
-    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
-        Task {
-            let detailView = TitlePreviewViewController()
-            detailView.configure(with: movie, youtubeID: youtubeID)
-            DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailView, animated: true)
+            DispatchQueue.main.async { [weak self] in
+                self?.updateSnapshot()
             }
         }
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        dataSource = nil
+    }
 }
 
 
-//MARK: - Setups
+//MARK: - Action
+extension SearchViewController {
+    private func updateSnapshot() {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.search])
+        snapshot.appendItems(searchVM.movies, toSection: .search)
+        dataSource?.apply(snapshot)
+    }
+    
+    private func navigateToDetailView(with movie: Movie) {
+        let detailView = DetailViewController()
+        detailView.setMovie(with: movie)
+        self.navigationController?.pushViewController(detailView, animated: true)
+    }
+}
+
+extension SearchViewController: ViewInteraction {}
+
+
+//MARK: - Setup
 private extension SearchViewController {
     func setup() {
         setupNavigationBar()
         setupSearchBar()
         setupTableView()
-        configureDataSource()
     }
     
     func setupNavigationBar() {
@@ -79,9 +83,8 @@ private extension SearchViewController {
     }
     
     func setupTableView() {
-        tableView = UITableView()
-        guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.separatorColor = .clear
         tableView.delegate = self
         tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
         view.addSubview(tableView)
@@ -95,28 +98,22 @@ private extension SearchViewController {
     }
     
     func configureDataSource() {
-        guard let tableView = tableView else { return }
         dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as? TableViewCell else { return UITableViewCell() }
-            cell.configure(with: movie)
+            cell.configure(for: movie)
             return cell
         }
     }
 }
 
 
-//MARK: - Table View Delegate
+//MARK: - Delegate
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        disableViewInteraction()
         tableView.deselectRow(at: indexPath, animated: true)
-        
         let movie = searchVM.movies[indexPath.row]
-        
-        Task {
-            let movieYoutube = await searchVM.getMovieDetail(for: movie)
-            guard let movieYoutube = movieYoutube else { return }
-            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
-        }
+        navigateToDetailView(with: movie)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -124,8 +121,6 @@ extension SearchViewController: UITableViewDelegate {
     }
 }
 
-
-//MARK: - Search Result Delegate
 extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let query = searchController.searchBar.text,
@@ -143,9 +138,10 @@ extension SearchViewController: UISearchResultsUpdating {
     }
 }
 
-
-extension SearchViewController: SearchResultsViewControllerDelegate {
-    func didTap(movie: Movie, youtubeID: String) {
-        navigateToDetailView(with: movie, youtubeID: youtubeID)
+extension SearchViewController: DetailViewDelegate {
+    func itemTapped(for type: ButtonType, with movie: Movie) {
+        if type == .none {
+            navigateToDetailView(with: movie)
+        }
     }
 }

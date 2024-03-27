@@ -28,7 +28,7 @@ class CoreDataManager {
         do {
             try context.save()
         } catch {
-            throw error
+            throw LocalError.failedToSaveData
         }
     }
 }

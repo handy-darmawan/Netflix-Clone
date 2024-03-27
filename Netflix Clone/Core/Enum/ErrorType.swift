@@ -25,12 +25,14 @@ enum LocalError: Error {
     case failedToSaveData
     case failedToQueryData
     case failedToDeleteData
+    case movieAlreadyExists
     var localizedDescription: String {
         switch self {
         case .failedToGetData: return "Failed to get data from local storage"
         case .failedToSaveData: return "Failed to save data to local storage"
         case .failedToQueryData: return "Failed to query data from local storage"
         case .failedToDeleteData: return "Failed to delete data from local storage"
+        case .movieAlreadyExists: return "Movie already exists in local storage"
         }
     }
 }

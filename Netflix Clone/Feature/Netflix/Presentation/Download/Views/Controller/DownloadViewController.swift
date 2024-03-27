@@ -8,15 +8,16 @@
 import UIKit
 
 class DownloadViewController: UIViewController {
-    
     //MARK: - Data Source
     private typealias DataSource = UITableViewDiffableDataSource<DownloadViewModel.Sections, Movie>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<DownloadViewModel.Sections, Movie>
     
-    //MARK: - Attributes
-    private var tableView: UITableView?
+    //MARK: - Properties
+    private var tableView = UITableView()
+    private var emptyStateView = UIView()
+    private var emptyLabel = UILabel()
+    var viewInteraction: UITableView { tableView }
     private let downloadVM = DownloadViewModel()
-    
     private var dataSource: DataSource?
     
     override func viewDidLoad() {
@@ -26,41 +27,88 @@ class DownloadViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        enableViewInteraction()
+        configureDataSource()
         Task {
             await downloadVM.onLoad()
-            self.updateSnapshot()
+            DispatchQueue.main.async { [weak self] in
+                self?.updateSnapshot()
+            }
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        dataSource = nil
     }
 }
 
 
-//MARK: - Actions
-extension DownloadViewController {
-    private func updateSnapshot() {
+//MARK: - Action
+private extension DownloadViewController {
+    func updateSnapshot() {
         var snapshot = Snapshot()
         snapshot.appendSections([.download])
         snapshot.appendItems(downloadVM.movies, toSection: .download)
         dataSource?.apply(snapshot)
+        
+        if downloadVM.movies.isEmpty {
+            showEmptyState()
+        }
+        else {
+            hideEmptyState()
+        }
     }
     
-    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
-        Task {
-            let detailView = TitlePreviewViewController()
-            detailView.configure(with: movie, youtubeID: youtubeID)
-            DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailView, animated: true)
-            }
-        }
+    func navigateToDetailView(with movie: Movie) {
+        let detailView = DetailViewController()
+        detailView.setMovie(with: movie)
+        self.navigationController?.pushViewController(detailView, animated: true)
+    }
+    
+    func showEmptyState() {
+        emptyStateView.isHidden = false
+        emptyLabel.isHidden = false
+    }
+    
+    func hideEmptyState() {
+        emptyStateView.isHidden = true
+        emptyLabel.isHidden = true
     }
 }
 
+extension DownloadViewController: ViewInteraction {}
 
-//MARK: - Setups
+
+//MARK: - Setup
 private extension DownloadViewController {
     func setup() {
         setupNavigationBar()
         setupTableView()
-        configureDataSource()
+        setupEmptyState()
+    }
+    
+    func setupEmptyState() {
+        emptyStateView.translatesAutoresizingMaskIntoConstraints = false
+        emptyStateView.backgroundColor = .systemBackground
+        view.addSubview(emptyStateView)
+        
+        NSLayoutConstraint.activate([
+            emptyStateView.topAnchor.constraint(equalTo: view.topAnchor),
+            emptyStateView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emptyStateView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emptyStateView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        
+        emptyLabel.translatesAutoresizingMaskIntoConstraints = false
+        emptyLabel.text = "No movies downloaded yet!"
+        emptyLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        emptyLabel.textColor = .label
+        emptyStateView.addSubview(emptyLabel)
+        
+        NSLayoutConstraint.activate([
+            emptyLabel.centerXAnchor.constraint(equalTo: emptyStateView.centerXAnchor),
+            emptyLabel.centerYAnchor.constraint(equalTo: emptyStateView.centerYAnchor)
+        ])
     }
     
     func setupNavigationBar() {
@@ -69,10 +117,9 @@ private extension DownloadViewController {
     }
     
     func setupTableView() {
-        tableView = UITableView()
-        guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
+        tableView.separatorColor = .clear
         tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
         view.addSubview(tableView)
         
@@ -85,10 +132,9 @@ private extension DownloadViewController {
     }
     
     func configureDataSource() {
-        guard let tableView = tableView else { return }
         dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as? TableViewCell else { return UITableViewCell() }
-            cell.configure(with: movie)
+            cell.configure(for: movie)
             return cell
         }
     }
@@ -98,14 +144,10 @@ private extension DownloadViewController {
 //MARK: - Delegate
 extension DownloadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        disableViewInteraction()
         tableView.deselectRow(at: indexPath, animated: true)
         let movie = downloadVM.movies[indexPath.row]
-        
-        Task {
-            let movieYoutube = await downloadVM.getMovieDetail(for: movie)
-            guard let movieYoutube = movieYoutube else { return }
-            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
-        }
+        navigateToDetailView(with: movie)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -113,7 +155,6 @@ extension DownloadViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        print("swipe")
         let delete = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (_, _, _) in
             guard let self = self else { return }
             let movie = self.downloadVM.movies[indexPath.row]
@@ -123,7 +164,6 @@ extension DownloadViewController: UITableViewDelegate {
                 self.updateSnapshot()
             }
         }
-        
         return UISwipeActionsConfiguration(actions: [delete])
     }
 }

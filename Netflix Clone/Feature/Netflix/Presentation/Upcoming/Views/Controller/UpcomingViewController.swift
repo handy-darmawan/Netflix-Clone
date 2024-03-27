@@ -8,15 +8,14 @@
 import UIKit
 
 class UpcomingViewController: UIViewController {
-    
     //MARK: - Data Source
     private typealias DataSource = UITableViewDiffableDataSource<UpcomingViewModel.Sections, Movie>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<UpcomingViewModel.Sections, Movie>
     
-    //MARK: - Attributes
-    private var tableView: UITableView?
+    //MARK: - Properties
+    private var tableView = UITableView()
+    var viewInteraction: UITableView { tableView }
     private let upcomingVM = UpcomingViewModel()
-    
     private var dataSource: DataSource?
 
     override func viewDidLoad() {
@@ -26,15 +25,23 @@ class UpcomingViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        enableViewInteraction()
+        configureDataSource()
         Task {
             await upcomingVM.onLoad()
-            self.updateSnapshot()
+            DispatchQueue.main.async { [weak self] in
+                self?.updateSnapshot()
+            }
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        dataSource = nil
     }
 }
 
 
-//MARK: - Actions
+//MARK: - Action
 extension UpcomingViewController {
     private func updateSnapshot() {
         var snapshot = Snapshot()
@@ -43,24 +50,21 @@ extension UpcomingViewController {
         dataSource?.apply(snapshot)
     }
     
-    private func navigateToDetailView(with movie: Movie, youtubeID: String) {
-        Task {
-            let detailView = TitlePreviewViewController()
-            detailView.configure(with: movie, youtubeID: youtubeID)
-            DispatchQueue.main.async {
-                self.navigationController?.pushViewController(detailView, animated: true)
-            }
-        }
+    private func navigateToDetailView(with movie: Movie) {
+        let detailView = DetailViewController()
+        detailView.setMovie(with: movie)
+        self.navigationController?.pushViewController(detailView, animated: true)
     }
 }
 
+extension UpcomingViewController: ViewInteraction {}
 
-//MARK: - Setups
+
+//MARK: - Setup
 private extension UpcomingViewController {
     func setup() {
         setupNavigationBar()
         setupTableView()
-        configureDataSource()
     }
     
     func setupNavigationBar() {
@@ -69,9 +73,8 @@ private extension UpcomingViewController {
     }
     
     func setupTableView() {
-        tableView = UITableView()
-        guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.separatorColor = .clear
         tableView.delegate = self
         tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
         view.addSubview(tableView)
@@ -85,10 +88,9 @@ private extension UpcomingViewController {
     }
     
     func configureDataSource() {
-        guard let tableView = tableView else { return }
         dataSource = DataSource(tableView: tableView) { tableView, indexPath, movie in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as? TableViewCell else { return UITableViewCell() }
-            cell.configure(with: movie)
+            cell.configure(for: movie)
             return cell
         }
     }
@@ -98,15 +100,10 @@ private extension UpcomingViewController {
 //MARK: - Delegate
 extension UpcomingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        disableViewInteraction()
         tableView.deselectRow(at: indexPath, animated: true)
-        
         let movie = upcomingVM.movies[indexPath.row]
-        
-        Task {
-            let movieYoutube = await upcomingVM.getMovieDetail(for: movie)
-            guard let movieYoutube = movieYoutube else { return }
-            navigateToDetailView(with: movie, youtubeID: movieYoutube.videoId)
-        }
+        navigateToDetailView(with: movie)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

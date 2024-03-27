@@ -8,14 +8,14 @@
 import UIKit
 
 class HomeViewModel {
+    //MARK: - Properties
     private let getTrendingMoviesUseCase: GetTrendingMoviesUseCase
     private let getTrendingTVUseCase: GetTrendingTVUseCase
     private let getPopularMoviesUseCase: GetPopularMoviesUseCase
     private let getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase
+    private let saveMovieUseCase: SaveUseCase
     private let getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
-    private let getMovieLinks: GetMovieUseCase
     private let movieRepository = MovieRepository.shared
-    private let youtubeRepository = YoutubeRepository.shared
     
     var trendingMovies: [Movie] = []
     var trendingTV: [Movie] = []
@@ -30,12 +30,12 @@ class HomeViewModel {
         getPopularMoviesUseCase = GetPopularMoviesUseCase(movieRepository: movieRepository)
         getTopRatedMoviesUseCase = GetTopRatedMoviesUseCase(movieRepository: movieRepository)
         getUpcomingMoviesUseCase = GetUpcomingMoviesUseCase(movieRepository: movieRepository)
-        getMovieLinks = GetMovieUseCase(youtubeRepository: youtubeRepository)
+        saveMovieUseCase = SaveUseCase(movieRepository: movieRepository)
     }
 }
 
 
-//MARK: Actions
+//MARK: - Action
 extension HomeViewModel {
     func onLoad() async {
         await getTrendingMovies()
@@ -48,67 +48,57 @@ extension HomeViewModel {
         headerMovies?.uuid += "_header"
     }
     
-    func getMovieDetail(for movie: Movie) async -> Youtube? {
+    func saveMovie(with movie: Movie) async {
         do {
-            guard let title = movie.originalTitle ?? movie.originalName else { return nil }
-            let result = try await getMovieLinks.execute(with: "\(title) Trailer")
-            return result
-        } catch {
-            print(error.localizedDescription)
-            return nil
-        }
+            try await saveMovieUseCase.execute(with: movie)
+            await AlertUtility.showAlert(with: "Success", message: "Movie saved")
+        } catch(let error as LocalError) { await AlertUtility.showAlert(with: "Information", message: error.localizedDescription)
+        } catch {}
     }
 }
 
-
-//MARK: Private Actions
 private extension HomeViewModel {
     func getTrendingMovies() async {
         do {
-            let results = try await getTrendingMoviesUseCase.execute()
-            trendingMovies = results
-        } catch {
-            print(error.localizedDescription)
-        }
-        
+            trendingMovies = try await getTrendingMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     func getTrendingTV() async {
         do {
-            let results = try await getTrendingTVUseCase.execute()
-            trendingTV = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            trendingTV = try await getTrendingTVUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     func getPopularMovies() async {
         do {
-            let results = try await getPopularMoviesUseCase.execute()
-            popularMovies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            popularMovies = try await getPopularMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     func getTopRatedMovies() async {
         do {
-            let results = try await getTopRatedMoviesUseCase.execute()
-            topRatedMovies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            topRatedMovies = try await getTopRatedMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
     
     func getUpcomingMovies() async {
         do {
-            let results = try await getUpcomingMoviesUseCase.execute()
-            upcomingMovies = results
-        } catch {
-            print(error.localizedDescription)
-        }
+            upcomingMovies = try await getUpcomingMoviesUseCase.execute()
+        } catch(let error as NetworkError) {
+            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+        } catch {}
     }
 }
+
 
 //MARK: - Enum
 extension HomeViewModel {

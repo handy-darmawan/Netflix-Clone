@@ -11,9 +11,9 @@ import CoreData
 class LocalDataSource: LocalDataSourceProtocol {
     static let shared = LocalDataSource()
     private let coreDataManager = CoreDataManager.shared
-    private let request = NSFetchRequest<Netflix>(entityName: "Netflix")
     
     func fetchMovies() async throws -> [Movie] {
+        let request = NSFetchRequest<Netflix>(entityName: "Netflix")
         do {
             let results = try coreDataManager.context.fetch(request)
             let movies = results.map { Movie.toModel($0) }
@@ -25,6 +25,7 @@ class LocalDataSource: LocalDataSourceProtocol {
     
     func saveMovie(with movie: Movie) async throws {
         //check to db, is there an existing movie
+        let request = NSFetchRequest<Netflix>(entityName: "Netflix")
         request.predicate = NSPredicate(format: "id = %@", NSNumber(value: movie.id))
         guard let results = try? coreDataManager.context.fetch(request) else {
             throw LocalError.failedToQueryData
@@ -38,13 +39,15 @@ class LocalDataSource: LocalDataSourceProtocol {
                 throw LocalError.failedToSaveData
             }
         }
+        else {
+            throw LocalError.movieAlreadyExists
+        }
     }
     
     func deleteMovie(with movie: Movie) async throws {
+        let request = NSFetchRequest<Netflix>(entityName: "Netflix")
         request.predicate = NSPredicate(format: "id = %@", NSNumber(value: movie.id))
-        guard let results = try? coreDataManager.context.fetch(request) else {
-            throw LocalError.failedToQueryData
-        }
+        guard let results = try? coreDataManager.context.fetch(request) else { throw LocalError.failedToQueryData }
 
         do {
             results.forEach { coreDataManager.context.delete($0) }
