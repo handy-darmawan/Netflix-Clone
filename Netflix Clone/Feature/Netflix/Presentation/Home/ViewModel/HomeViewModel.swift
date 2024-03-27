@@ -51,6 +51,7 @@ extension HomeViewModel {
     func saveMovie(with movie: Movie) async {
         do {
             try await saveMovieUseCase.execute(with: movie)
+            await AlertUtility.showAlert(with: "Success", message: "Movie saved")
         } catch(let error as LocalError) { await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
         } catch {}
     }
