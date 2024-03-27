@@ -8,7 +8,6 @@
 import UIKit
 import WebKit
 
-
 class DetailViewController: UIViewController {
     //MARK: - Properties
     private var titleLabel = UILabel()

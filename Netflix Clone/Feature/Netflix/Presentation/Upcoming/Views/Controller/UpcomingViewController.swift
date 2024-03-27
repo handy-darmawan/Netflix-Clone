@@ -14,9 +14,9 @@ class UpcomingViewController: UIViewController {
     
     //MARK: - Properties
     private var tableView = UITableView()
+    var viewInteraction: UITableView { tableView }
     private let upcomingVM = UpcomingViewModel()
     private var dataSource: DataSource?
-    var viewInteraction: UITableView { tableView }
 
     override func viewDidLoad() {
         super.viewDidLoad()

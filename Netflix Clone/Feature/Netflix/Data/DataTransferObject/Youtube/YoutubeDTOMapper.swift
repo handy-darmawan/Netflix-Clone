@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 struct YoutubeDTOMapper {
     static func map(_ dto: YoutubeDTO) -> Youtube {
         return Youtube(

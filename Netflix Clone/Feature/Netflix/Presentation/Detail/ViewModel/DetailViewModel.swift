@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 class DetailViewModel {
     //MARK: - Properties
     private let getMovieUseCase: GetMovieUseCase
@@ -29,7 +28,7 @@ extension DetailViewModel {
             try await saveMovieUseCase.execute(with: movie)
             await AlertUtility.showAlert(with: "Information", message: "Movie Saved")
         } catch(let error as LocalError) {
-            await AlertUtility.showAlert(with: "Error", message: error.localizedDescription)
+            await AlertUtility.showAlert(with: "Information", message: error.localizedDescription)
         }
         catch {}
     }

@@ -16,9 +16,9 @@ class DownloadViewController: UIViewController {
     private var tableView = UITableView()
     private var emptyStateView = UIView()
     private var emptyLabel = UILabel()
+    var viewInteraction: UITableView { tableView }
     private let downloadVM = DownloadViewModel()
     private var dataSource: DataSource?
-    var viewInteraction: UITableView { tableView }
     
     override func viewDidLoad() {
         super.viewDidLoad()

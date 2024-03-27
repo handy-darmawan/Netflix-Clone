@@ -8,8 +8,9 @@
 import UIKit
 
 class HeaderView: UICollectionReusableView {
-    //MARK: - Properties
     static let identifier = "headerView"
+
+    //MARK: - Properties
     private var textLabel = UILabel()
     
     override init(frame: CGRect) {

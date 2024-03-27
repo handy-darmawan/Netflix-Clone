@@ -14,9 +14,9 @@ class HomeViewController: UIViewController {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<HomeViewModel.Sections, Movie>
     
     //MARK: - Properties
+    var viewInteraction: UICollectionView { collectionView }
     private var dataSource: DataSource?
     private var homeVM = HomeViewModel()
-    var viewInteraction: UICollectionView { collectionView }
 
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout())

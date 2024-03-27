@@ -11,8 +11,8 @@ import Foundation
 class MovieNetworkManager {
     static let shared = MovieNetworkManager()
     
+    //get youtube api key from config.plist
     var API_KEY: String {
-        //get youtube api key from config.plist
         guard let path = Bundle.main.path(forResource: "Config", ofType: "plist") else { return "Config.plist not found" }
 
         let pathURL = URL(filePath: path)
