@@ -8,12 +8,11 @@
 import UIKit
 
 class UpcomingViewController: UIViewController {
-    
     //MARK: - Data Source
     private typealias DataSource = UITableViewDiffableDataSource<UpcomingViewModel.Sections, Movie>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<UpcomingViewModel.Sections, Movie>
     
-    //MARK: - Attributes
+    //MARK: - Properties
     private var tableView = UITableView()
     private let upcomingVM = UpcomingViewModel()
     private var dataSource: DataSource?
@@ -40,7 +39,7 @@ class UpcomingViewController: UIViewController {
 }
 
 
-//MARK: - Actions
+//MARK: - Action
 extension UpcomingViewController {
     private func updateSnapshot() {
         var snapshot = Snapshot()
@@ -57,7 +56,7 @@ extension UpcomingViewController {
 }
 
 
-//MARK: - setup
+//MARK: - Setup
 private extension UpcomingViewController {
     func setup() {
         setupNavigationBar()

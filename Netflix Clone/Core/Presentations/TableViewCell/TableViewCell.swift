@@ -11,7 +11,7 @@ import SDWebImage
 class TableViewCell: UITableViewCell {
     static let identifier = "TitleTableViewCell"
     
-    //MARK: - Attributes
+    //MARK: - Properties
     private var containerView = UIView()
     private var movieImageView = UIImageView()
     private var movieLabel = UILabel()
@@ -27,7 +27,7 @@ class TableViewCell: UITableViewCell {
 }
 
 
-//MARK: Actions
+//MARK: - Action
 extension TableViewCell {
     func configure(for movie: Movie) {
         setup()
@@ -43,7 +43,7 @@ extension TableViewCell {
 }
 
 
-//MARK: Setup
+//MARK: - Setup
 private extension TableViewCell {
     func setup() {
         setupContainer()

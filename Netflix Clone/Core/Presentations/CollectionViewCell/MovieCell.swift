@@ -12,15 +12,33 @@ import SDWebImage
 class MovieCell: UICollectionViewCell {
     static let identifier = "CellItem"
     
-    //MARK: Attributes
+    //MARK: - Properties
     private var movieImageView = UIImageView()
     private var playButton = UIButton()
     private var downloadButton = UIButton()
     private var movie: Movie?
-    
-    //MARK: Delegate
     weak var delegate: DetailViewDelegate?
-
+    
+    //MARK: - Computed Properties
+    private var bottomAnchorDistance: CGFloat {
+        let heightView = contentView.frame.height
+        let bottomDistance = heightView * 0.15
+        return -bottomDistance
+    }
+    
+    private var buttonSpacing: CGFloat {
+        let widthView = contentView.frame.width
+        let spacing = widthView * 0.05
+        return spacing
+    }
+    
+    private var imageURL: URL {
+        guard
+            let imagePath = movie?.posterPath,
+            let url = URL(string: "\(MovieNetworkManager.shared.imageBaseURL)\(imagePath)")
+        else { return URL(string: "")!}
+        return url
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,33 +57,26 @@ class MovieCell: UICollectionViewCell {
 }
 
 
-//MARK: Actions
+//MARK: - Action
 private extension MovieCell {
     @objc func buttonTapped(_ sender: UIButton) {
         guard
             let buttonLabel = sender.titleLabel?.text,
             let buttonType = ButtonType(rawValue: buttonLabel),
             let movie = movie
-        else {
-            return
-            //show action
-        }
+        else { return }
         
         delegate?.itemTapped(for: buttonType, with: movie)
     }
     
     func setImage(with movie: Movie) {
         self.movie = movie
-        guard
-            let imagePath = movie.posterPath,
-            let url = URL(string: "https://image.tmdb.org/t/p/w500\(imagePath))")
-        else { return }
-        movieImageView.sd_setImage(with: url, completed: nil)
+        movieImageView.sd_setImage(with: imageURL, completed: nil)
     }
 }
 
 
-//MARK: Setup
+//MARK: - Setup
 private extension MovieCell {
     func setup(for type: CellType) {
         if type == .header {
@@ -110,9 +121,9 @@ private extension MovieCell {
         addSubview(playButton)
         
         NSLayoutConstraint.activate([
-            playButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 70),
-            playButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
-            playButton.widthAnchor.constraint(equalToConstant: 100)
+            playButton.widthAnchor.constraint(equalToConstant: 100),
+            playButton.trailingAnchor.constraint(equalTo: centerXAnchor, constant: -buttonSpacing),
+            playButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: bottomAnchorDistance),
         ])
     }
     
@@ -126,9 +137,9 @@ private extension MovieCell {
         addSubview(downloadButton)
         
         NSLayoutConstraint.activate([
-            downloadButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -70),
-            downloadButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
-            downloadButton.widthAnchor.constraint(equalToConstant: 100)
+            downloadButton.widthAnchor.constraint(equalToConstant: 100),
+            downloadButton.leadingAnchor.constraint(equalTo: centerXAnchor, constant: buttonSpacing),
+            downloadButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: bottomAnchorDistance),
         ])
     }
 }

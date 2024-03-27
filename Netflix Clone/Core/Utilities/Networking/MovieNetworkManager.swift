@@ -25,6 +25,7 @@ class MovieNetworkManager {
     }
     
     let baseURL = "https://api.themoviedb.org/3"
+    let imageBaseURL = "https://image.tmdb.org/t/p/w500"
     
     private init() {}
 }

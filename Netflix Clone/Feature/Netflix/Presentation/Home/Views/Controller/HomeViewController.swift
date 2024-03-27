@@ -10,8 +10,6 @@ import UIKit
 /**
  Update:
  1. handle tap on cell (only once per ... sec)
- 2. documentation / annotation
- 3. HeroHeaderView -> Use UIStackView to make autolayout in button
  */
 
 class HomeViewController: UIViewController {
@@ -19,14 +17,13 @@ class HomeViewController: UIViewController {
     private typealias DataSource = UICollectionViewDiffableDataSource<HomeViewModel.Sections, Movie>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<HomeViewModel.Sections, Movie>
     
-    //MARK: - Attribute
+    //MARK: - Properties
+    private var dataSource: DataSource?
+    private var homeVM = HomeViewModel()
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout())
         return collectionView
     }()
-    
-    private var dataSource: DataSource?
-    private var homeVM = HomeViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +42,7 @@ class HomeViewController: UIViewController {
 }
 
 
-//MARK: Actions
+//MARK: - Action
 extension HomeViewController {
     private func navigateToDetailView(with movie: Movie) {
         let detailView = DetailViewController()
@@ -74,7 +71,7 @@ extension HomeViewController {
 }
 
 
-//MARK: Setup
+//MARK: - Setup
 private extension HomeViewController {
     func setup() {
         setupCollectionView()
@@ -196,7 +193,6 @@ extension HomeViewController: DetailViewDelegate {
             navigateToDetailView(with: movie)
         }
         else if type == .download {
-            //TODO: operation to save
             Task { await homeVM.saveMovie(with: movie) }
         }
     }

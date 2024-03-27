@@ -12,8 +12,9 @@ class SearchResultsViewController: UIViewController {
     private typealias DataSource = UICollectionViewDiffableDataSource<SearchViewModel.Sections, Movie>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<SearchViewModel.Sections, Movie>
     
-    //MARK: - Attributes
+    //MARK: - Properties
     private var searchVM: SearchViewModel = SearchViewModel()
+    private var movies: [Movie] = []
     private var dataSource: DataSource?
     weak var delegate: DetailViewDelegate?
     private var collectionView: UICollectionView = {
@@ -25,8 +26,6 @@ class SearchResultsViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return collectionView
     }()
-    
-    private var movies: [Movie] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,12 +40,12 @@ class SearchResultsViewController: UIViewController {
 }
 
 
-//MARK: Actions
+//MARK: - Action
 extension SearchResultsViewController {
     private func updateSnapshot() {
         var snapshot = Snapshot()
         snapshot.appendSections([.search])
-        snapshot.appendItems(movies)
+        snapshot.appendItems(movies, toSection: .search)
         dataSource?.apply(snapshot)
     }
     
@@ -57,7 +56,7 @@ extension SearchResultsViewController {
 }
 
 
-//MARK: Setup
+//MARK: - Setup
 private extension SearchResultsViewController {
     func setup() {
         setupCollectionView()
@@ -88,6 +87,8 @@ private extension SearchResultsViewController {
     }
 }
 
+
+//MARK: - Delegate
 extension SearchResultsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)

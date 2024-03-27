@@ -10,8 +10,7 @@ import WebKit
 
 
 class DetailViewController: UIViewController {
-    
-    //MARK: - Attributes
+    //MARK: - Properties
     private var titleLabel = UILabel()
     private var scrollView = UIScrollView()
     private var webView: WKWebView?
@@ -35,7 +34,8 @@ class DetailViewController: UIViewController {
     }
 }
 
-//MARK: - Actions
+
+//MARK: - Action
 extension DetailViewController {
     func setMovie(with movie: Movie) {
         self.movie = movie
@@ -64,7 +64,7 @@ extension DetailViewController {
 }
 
 
-//MARK: - setup
+//MARK: - Setup
 private extension DetailViewController {
     func setup() {
         setupScrollView()
@@ -117,12 +117,11 @@ private extension DetailViewController {
     }
     
     func setupTitleLabel() {
+        guard let webView = webView else { return }
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.font = .systemFont(ofSize: 22, weight: .bold)
         containerView.addSubview(titleLabel)
-        
-        guard let webView = webView else { return }
-        
+                
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: webView.bottomAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
@@ -140,7 +139,6 @@ private extension DetailViewController {
             overviewLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             overviewLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             overviewLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
-            
         ])
     }
     
@@ -151,7 +149,7 @@ private extension DetailViewController {
         downloadButton.backgroundColor = .systemBlue
         downloadButton.setTitleColor(.white, for: .normal)
         downloadButton.layer.cornerRadius = 8
-        view.addSubview(downloadButton)
+        containerView.addSubview(downloadButton)
         
         NSLayoutConstraint.activate([
             downloadButton.topAnchor.constraint(equalTo: overviewLabel.bottomAnchor, constant: 20),

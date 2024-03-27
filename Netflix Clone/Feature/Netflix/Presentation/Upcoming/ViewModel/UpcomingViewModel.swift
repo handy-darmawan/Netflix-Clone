@@ -11,7 +11,7 @@ import Foundation
 class UpcomingViewModel {
     enum Sections { case upcoming }
     
-    //MARK: - Attributes
+    //MARK: - Properties
     private let getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
     private let movieRepository = MovieRepository.shared
     var movies: [Movie] = []
@@ -21,14 +21,13 @@ class UpcomingViewModel {
     }
 }
 
+
+//MARK: - Action
 extension UpcomingViewModel {
     func onLoad() async {
         await fetchUpcomingMovies()
     }
-}
 
-//MARK: - Actions
-extension UpcomingViewModel {
     private func fetchUpcomingMovies() async {
         do {
             movies = try await getUpcomingMoviesUseCase.execute()

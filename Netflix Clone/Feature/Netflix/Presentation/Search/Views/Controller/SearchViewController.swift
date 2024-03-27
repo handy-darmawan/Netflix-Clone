@@ -8,12 +8,11 @@
 import UIKit
 
 class SearchViewController: UIViewController {
-    
     //MARK: - Data Source
     private typealias DataSource = UITableViewDiffableDataSource<SearchViewModel.Sections, Movie>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<SearchViewModel.Sections, Movie>
     
-    //MARK: - Attributes
+    //MARK: - Properties
     private var tableView = UITableView()
     private let searchVM = SearchViewModel()
     private var dataSource: DataSource?
@@ -40,7 +39,7 @@ class SearchViewController: UIViewController {
 }
 
 
-//MARK: - Actions
+//MARK: - Action
 extension SearchViewController {
     private func updateSnapshot() {
         var snapshot = Snapshot()
@@ -57,7 +56,7 @@ extension SearchViewController {
 }
 
 
-//MARK: - setup
+//MARK: - Setup
 private extension SearchViewController {
     func setup() {
         setupNavigationBar()
@@ -104,7 +103,7 @@ private extension SearchViewController {
 }
 
 
-//MARK: - Table View Delegate
+//MARK: - Delegate
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -117,8 +116,6 @@ extension SearchViewController: UITableViewDelegate {
     }
 }
 
-
-//MARK: - Search Result Delegate
 extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let query = searchController.searchBar.text,
@@ -136,12 +133,10 @@ extension SearchViewController: UISearchResultsUpdating {
     }
 }
 
-
 extension SearchViewController: DetailViewDelegate {
     func itemTapped(for type: ButtonType, with movie: Movie) {
         if type == .none {
             navigateToDetailView(with: movie)
         }
     }
-    
 }

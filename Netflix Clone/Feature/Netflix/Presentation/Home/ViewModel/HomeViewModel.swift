@@ -8,6 +8,7 @@
 import UIKit
 
 class HomeViewModel {
+    //MARK: - Properties
     private let getTrendingMoviesUseCase: GetTrendingMoviesUseCase
     private let getTrendingTVUseCase: GetTrendingTVUseCase
     private let getPopularMoviesUseCase: GetPopularMoviesUseCase
@@ -34,7 +35,7 @@ class HomeViewModel {
 }
 
 
-//MARK: Actions
+//MARK: - Action
 extension HomeViewModel {
     func onLoad() async {
         await getTrendingMovies()
@@ -55,8 +56,6 @@ extension HomeViewModel {
     }
 }
 
-
-//MARK: Private Actions
 private extension HomeViewModel {
     func getTrendingMovies() async {
         do {
@@ -98,6 +97,7 @@ private extension HomeViewModel {
         } catch {}
     }
 }
+
 
 //MARK: - Enum
 extension HomeViewModel {
