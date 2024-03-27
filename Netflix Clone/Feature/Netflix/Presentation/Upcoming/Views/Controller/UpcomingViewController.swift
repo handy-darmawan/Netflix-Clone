@@ -16,7 +16,8 @@ class UpcomingViewController: UIViewController {
     private var tableView = UITableView()
     private let upcomingVM = UpcomingViewModel()
     private var dataSource: DataSource?
-    
+    var viewInteraction: UITableView { tableView }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -24,6 +25,7 @@ class UpcomingViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        enableViewInteraction()
         configureDataSource()
         Task {
             await upcomingVM.onLoad()
@@ -54,6 +56,8 @@ extension UpcomingViewController {
         self.navigationController?.pushViewController(detailView, animated: true)
     }
 }
+
+extension UpcomingViewController: ViewInteraction {}
 
 
 //MARK: - Setup
@@ -96,6 +100,7 @@ private extension UpcomingViewController {
 //MARK: - Delegate
 extension UpcomingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        disableViewInteraction()
         tableView.deselectRow(at: indexPath, animated: true)
         let movie = upcomingVM.movies[indexPath.row]
         navigateToDetailView(with: movie)

@@ -16,6 +16,7 @@ class SearchViewController: UIViewController {
     private var tableView = UITableView()
     private let searchVM = SearchViewModel()
     private var dataSource: DataSource?
+    var viewInteraction: UITableView { tableView }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +25,7 @@ class SearchViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        enableViewInteraction()
         configureDataSource()
         Task {
             await searchVM.onLoad()
@@ -54,6 +56,8 @@ extension SearchViewController {
         self.navigationController?.pushViewController(detailView, animated: true)
     }
 }
+
+extension SearchViewController: ViewInteraction {}
 
 
 //MARK: - Setup
@@ -106,6 +110,7 @@ private extension SearchViewController {
 //MARK: - Delegate
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        disableViewInteraction()
         tableView.deselectRow(at: indexPath, animated: true)
         let movie = searchVM.movies[indexPath.row]
         navigateToDetailView(with: movie)

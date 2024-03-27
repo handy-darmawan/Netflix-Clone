@@ -51,7 +51,7 @@ extension DetailViewController {
     private func configureWebView(with movie: Movie) {
         Task {
             let youtubeID = await detailVM.getYoutubeID(for: movie) ?? "Unknown"
-            guard let url = URL(string: "https://www.youtube.com/watch?v=" + youtubeID) else { return }
+            guard let url = URL(string: YoutubeNetworkManager.shared.youtubeBaseURL + youtubeID) else { return }
             webView?.load(URLRequest(url: url))
         }
     }

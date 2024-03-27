@@ -31,14 +31,19 @@ class TableViewCell: UITableViewCell {
 extension TableViewCell {
     func configure(for movie: Movie) {
         setup()
-        guard
-            let posterPath = movie.posterPath,
-            let title = movie.originalName ?? movie.originalTitle
-        else { return }
+        guard let title = movie.originalName ?? movie.originalTitle else { return }
         
         movieLabel.text = title
-        let path = "https://image.tmdb.org/t/p/w500\(posterPath)"
-        movieImageView.sd_setImage(with: URL(string: path), completed: nil)
+        let imageURL = imageURL(from: movie)
+        movieImageView.sd_setImage(with: imageURL, completed: nil)
+    }
+    
+    private func imageURL(from movie: Movie) -> URL? {
+        guard
+            let imagePath = movie.posterPath,
+            let url = URL(string: "\(MovieNetworkManager.shared.imageBaseURL)\(imagePath)")
+        else { return nil}
+        return url
     }
 }
 

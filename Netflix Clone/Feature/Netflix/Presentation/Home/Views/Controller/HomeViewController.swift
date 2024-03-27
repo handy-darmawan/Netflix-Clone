@@ -7,10 +7,6 @@
 
 import UIKit
 
-/**
- Update:
- 1. handle tap on cell (only once per ... sec)
- */
 
 class HomeViewController: UIViewController {
     //MARK: - DataSource
@@ -20,6 +16,8 @@ class HomeViewController: UIViewController {
     //MARK: - Properties
     private var dataSource: DataSource?
     private var homeVM = HomeViewModel()
+    var viewInteraction: UICollectionView { collectionView }
+
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: compositionalLayout())
         return collectionView
@@ -32,6 +30,7 @@ class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         configureDataSource()
+        enableViewInteraction()
         Task {
             await homeVM.onLoad()
             DispatchQueue.main.async { [weak self] in
@@ -69,6 +68,8 @@ extension HomeViewController {
         navigationController?.navigationBar.transform = .init(translationX: 0, y: 0)
     }
 }
+
+extension HomeViewController: ViewInteraction {}
 
 
 //MARK: - Setup
@@ -164,6 +165,7 @@ private extension HomeViewController {
 //MARK: - Delegate
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        disableViewInteraction()
         var movie: Movie?
         let section = HomeViewModel.Sections(rawValue: indexPath.section)
         switch section {
@@ -184,7 +186,6 @@ extension HomeViewController: UICollectionViewDelegate {
         let offset = scrollView.contentOffset.y + defaultOffset
         navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
     }
-    
 }
 
 extension HomeViewController: DetailViewDelegate {

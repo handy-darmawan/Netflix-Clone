@@ -18,6 +18,7 @@ class DownloadViewController: UIViewController {
     private var emptyLabel = UILabel()
     private let downloadVM = DownloadViewModel()
     private var dataSource: DataSource?
+    var viewInteraction: UITableView { tableView }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +27,7 @@ class DownloadViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        enableViewInteraction()
         configureDataSource()
         Task {
             await downloadVM.onLoad()
@@ -73,6 +75,8 @@ private extension DownloadViewController {
         emptyLabel.isHidden = true
     }
 }
+
+extension DownloadViewController: ViewInteraction {}
 
 
 //MARK: - Setup
@@ -140,6 +144,7 @@ private extension DownloadViewController {
 //MARK: - Delegate
 extension DownloadViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        disableViewInteraction()
         tableView.deselectRow(at: indexPath, animated: true)
         let movie = downloadVM.movies[indexPath.row]
         navigateToDetailView(with: movie)

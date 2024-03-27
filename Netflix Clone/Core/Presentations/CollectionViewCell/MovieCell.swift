@@ -32,11 +32,11 @@ class MovieCell: UICollectionViewCell {
         return spacing
     }
     
-    private var imageURL: URL {
+    private var imageURL: URL? {
         guard
             let imagePath = movie?.posterPath,
             let url = URL(string: "\(MovieNetworkManager.shared.imageBaseURL)\(imagePath)")
-        else { return URL(string: "")!}
+        else { return nil}
         return url
     }
     
@@ -47,7 +47,7 @@ class MovieCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     ///configure for header or just cell
     func configureFor(type: CellType, movie: Movie) {
         setup(for: type)
@@ -73,12 +73,18 @@ private extension MovieCell {
         self.movie = movie
         movieImageView.sd_setImage(with: imageURL, completed: nil)
     }
+    
+    private func clearView() {
+        subviews.forEach { $0.removeFromSuperview()}
+        layer.sublayers?.forEach { $0.removeFromSuperlayer()}
+    }
 }
 
 
 //MARK: - Setup
 private extension MovieCell {
     func setup(for type: CellType) {
+        clearView()
         if type == .header {
             setupMovieImageView()
             setupGradient()

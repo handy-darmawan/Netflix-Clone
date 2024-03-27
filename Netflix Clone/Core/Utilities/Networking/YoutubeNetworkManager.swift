@@ -23,6 +23,7 @@ class YoutubeNetworkManager {
     }
     
     let baseURL = "https://www.googleapis.com/youtube/v3/search?"
+    let youtubeBaseURL = "https://www.youtube.com/watch?v="
     
     private init() {}
 }

@@ -16,7 +16,9 @@ class SearchResultsViewController: UIViewController {
     private var searchVM: SearchViewModel = SearchViewModel()
     private var movies: [Movie] = []
     private var dataSource: DataSource?
+    var viewInteraction: UICollectionView { collectionView }
     weak var delegate: DetailViewDelegate?
+    
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -34,6 +36,7 @@ class SearchResultsViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        enableViewInteraction()
         configureDataSource()
         updateSnapshot()
     }
@@ -54,6 +57,8 @@ extension SearchResultsViewController {
         updateSnapshot()
     }
 }
+
+extension SearchResultsViewController: ViewInteraction {}
 
 
 //MARK: - Setup
@@ -91,6 +96,7 @@ private extension SearchResultsViewController {
 //MARK: - Delegate
 extension SearchResultsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        disableViewInteraction()
         collectionView.deselectItem(at: indexPath, animated: true)
         let movie = movies[indexPath.row]
         delegate?.itemTapped(for: .none, with: movie)
