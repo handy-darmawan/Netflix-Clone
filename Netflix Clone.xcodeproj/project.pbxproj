@@ -229,7 +229,6 @@
 			children = (
 				809716DD2BB2DB9900E9396F /* Alert */,
 				806BF1D22BAAF41E00771C09 /* CollectionViewCell */,
-				80EF1E882BA1AFF600A0601D /* PreviewViewController */,
 				80EF1E872BA1AFD700A0601D /* TableViewCell */,
 			);
 			path = Presentations;
@@ -749,13 +748,6 @@
 				805B75BA2B90C09B0046FDC8 /* TableViewCell.swift */,
 			);
 			path = TableViewCell;
-			sourceTree = "<group>";
-		};
-		80EF1E882BA1AFF600A0601D /* PreviewViewController */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = PreviewViewController;
 			sourceTree = "<group>";
 		};
 		80EF1E8B2BA1B06300A0601D /* Components */ = {

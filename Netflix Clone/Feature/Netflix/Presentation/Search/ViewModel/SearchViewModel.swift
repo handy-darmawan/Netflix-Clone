@@ -10,10 +10,10 @@ import UIKit
 class SearchViewModel {
     enum Sections { case search }
     
+    //MARK: - Attributes
     private let searchMoviesUseCase: SearchByKeywordUseCase
     private let getDiscoverMoviesUseCase: GetDiscoverMoviesUseCase
     private let movieRepository = MovieRepository.shared
-    
     var movies: [Movie] = []
     
     init() {
@@ -22,14 +22,13 @@ class SearchViewModel {
     }
 }
 
+
+//MARK: - Action
 extension SearchViewModel {
     func onLoad() async {
         await getDiscoverMovies()
     }
-}
-
-//MARK: - Actions
-extension SearchViewModel {
+    
     func searchMovies(with query: String) async {
         do {
             movies = try await searchMoviesUseCase.execute(with: query)

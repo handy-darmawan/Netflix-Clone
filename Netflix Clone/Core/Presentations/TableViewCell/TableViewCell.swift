@@ -27,7 +27,7 @@ class TableViewCell: UITableViewCell {
 }
 
 
-//MARK: Actions
+//MARK: - Action
 extension TableViewCell {
     func configure(for movie: Movie) {
         setup()
@@ -43,7 +43,7 @@ extension TableViewCell {
 }
 
 
-//MARK: Setup
+//MARK: - Setup
 private extension TableViewCell {
     func setup() {
         setupContainer()

@@ -10,10 +10,10 @@ import Foundation
 class DownloadViewModel {
     enum Sections { case download }
     
+    //MARK: - Attributes
     private let fetchMoviesUseCase: FetchUseCase
     private let deleteMovie: DeleteUseCase
     private let movieRepository = MovieRepository.shared
-    
     var movies: [Movie] = []
     
     init() {
@@ -22,14 +22,13 @@ class DownloadViewModel {
     }
 }
 
+
+//MARK: - Action
 extension DownloadViewModel {
     func onLoad() async {
         await fetchMovies()
     }
-}
-
-//MARK: - Actions
-extension DownloadViewModel {
+    
     private func fetchMovies() async {
         do {
             movies = try await fetchMoviesUseCase.execute()

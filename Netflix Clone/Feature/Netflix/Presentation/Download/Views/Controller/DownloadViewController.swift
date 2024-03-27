@@ -8,7 +8,6 @@
 import UIKit
 
 class DownloadViewController: UIViewController {
-    
     //MARK: - Data Source
     private typealias DataSource = UITableViewDiffableDataSource<DownloadViewModel.Sections, Movie>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<DownloadViewModel.Sections, Movie>
@@ -42,7 +41,7 @@ class DownloadViewController: UIViewController {
 }
 
 
-//MARK: - Actions
+//MARK: - Action
 private extension DownloadViewController {
     func updateSnapshot() {
         var snapshot = Snapshot()
@@ -76,7 +75,7 @@ private extension DownloadViewController {
 }
 
 
-//MARK: - setup
+//MARK: - Setup
 private extension DownloadViewController {
     func setup() {
         setupNavigationBar()
@@ -163,4 +162,3 @@ extension DownloadViewController: UITableViewDelegate {
         return UISwipeActionsConfiguration(actions: [delete])
     }
 }
-

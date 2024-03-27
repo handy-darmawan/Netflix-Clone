@@ -21,14 +21,13 @@ class UpcomingViewModel {
     }
 }
 
+
+//MARK: - Action
 extension UpcomingViewModel {
     func onLoad() async {
         await fetchUpcomingMovies()
     }
-}
 
-//MARK: - Actions
-extension UpcomingViewModel {
     private func fetchUpcomingMovies() async {
         do {
             movies = try await getUpcomingMoviesUseCase.execute()

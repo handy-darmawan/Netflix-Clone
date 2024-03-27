@@ -9,7 +9,7 @@ import Foundation
 
 
 class DetailViewModel {
-    //MARK: Attributes
+    //MARK: - Attributes
     private let getMovieUseCase: GetMovieUseCase
     private let saveMovieUseCase: SaveUseCase
     private let youtubeRepository = YoutubeRepository.shared
@@ -22,7 +22,7 @@ class DetailViewModel {
 }
 
 
-//MARK: Actions
+//MARK: - Action
 extension DetailViewModel {
     func saveMovie(with movie: Movie) async {
         do {
