@@ -43,8 +43,8 @@ To run the Netflix clone project locally, follow these steps:
 
 
 ## 5. Screenshots <a name="screenshots"></a>
-![Home](Images/Home.png)
-![Search](Images/Search.png)
+<img src="image/home.png" width=250> <img src="image/detail.png" width=250>
+
 
 
 ## 6. References <a name="references"></a>
